@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CrazyTaxi">
+</Property><Property Name="Projektmappendatei" Value="G:\AE\CrazyTaxi-0.3\CrazyTaxi.sln">
+</Property><Property Name="Benutzeroptionendatei" Value="G:\AE\CrazyTaxi-0.3\CrazyTaxi.suo">
+</Property><Property Name="Date" Value="Mittwoch, 13. Juni 2012">
+</Property><Property Name="Time" Value="08:22">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="CrazyTaxi.sln" Description="Datei wurde erfolgreich als &quot;G:\AE\CrazyTaxi-0.3\Backup\CrazyTaxi.sln&quot; gesichert">
+</Event><Event ErrorLevel="0" Project="" Source="CrazyTaxi.suo" Description="Datei wurde erfolgreich als &quot;G:\AE\CrazyTaxi-0.3\Backup\CrazyTaxi.suo&quot; gesichert">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="CrazyTaxi.csproj" Description="Projektdatei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CrazyTaxi.csproj">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Car\AbstractCarController.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Car\AbstractCarController.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Car\AbstractCarPanel.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Car\AbstractCarPanel.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Car\CarController.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Car\CarController.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Car\CarPanel.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Car\CarPanel.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="CT_Helper.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CT_Helper.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="CT_UI.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CT_UI.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="CT_UI.Designer.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CT_UI.Designer.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="DoubleBufferedPanel.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\DoubleBufferedPanel.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="HighscoreControlView.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\HighscoreControlView.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="HighscoreControlView.Designer.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\HighscoreControlView.Designer.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Program.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Program.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Properties\AssemblyInfo.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\NordwindDataSet.Designer.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\NordwindDataSet.Designer.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="VistaButton.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\VistaButton.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Properties\Resources.Designer.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Properties\Resources.Designer.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Properties\Settings.Designer.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Properties\Settings.Designer.cs">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Properties\Settings.settings" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Properties\Settings.settings">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\back3.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\back3.jpg">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\back1.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\back1.jpg">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\back2.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\back2.jpg">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\GTA2_CAR_71.png" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\GTA2_CAR_71.png">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\Taxi-GTA2.png" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\Taxi-GTA2.png">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\2.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\2.jpg">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\3.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\3.jpg">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\4.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\4.jpg">
+</Event><Event ErrorLevel="2" Project="CrazyTaxi" Source="Resources\cursor.cur" Description="Fehler beim Sichern der Datei als G:\AE\CrazyTaxi-0.3\Backup\Resources\cursor.cur.">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\BlackAngel.cur" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\BlackAngel.cur">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="app.config" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\app.config">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\HAND CURSOR COMIC.ico" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\HAND CURSOR COMIC.ico">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\NordwindDataSet.xsc" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\NordwindDataSet.xsc">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\NordwindDataSet.xsd" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\NordwindDataSet.xsd">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\NordwindDataSet.xss" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\NordwindDataSet.xss">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\ElementList.xml" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\ElementList.xml">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Custom.cur" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Custom.cur">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="HAND CURSOR COMIC.ico" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\HAND CURSOR COMIC.ico">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Resources\Nordwind.mdb" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Resources\Nordwind.mdb">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="CT_UI.resx" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CT_UI.resx">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="HighscoreControlView.resx" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\HighscoreControlView.resx">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="Properties\Resources.resx" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\Properties\Resources.resx">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="VistaButton.resx" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\VistaButton.resx">
+</Event><Event ErrorLevel="0" Project="CrazyTaxi" Source="CrazyTaxi.csproj" Description="Die Projektdatei erfordert keine Konvertierung.">
+</Event><Event ErrorLevel="3" Project="CrazyTaxi" Source="CrazyTaxi.csproj" Description="Keine Konvertierung erforderlich">
+</Event><Event ErrorLevel="1" Project="AccessDBConector" Source="D:\dotnet\src\julian\AccessDBConector\AccessDBConector\AccessDBConector.csproj" Description="Warnung: Die Sicherungskopie der Projektdatei wird in einem relativen Pfad erstellt, der vom relativen Pfad der ursprünglichen Projektmappe abweicht. Der Unterschied in der Ordnerhierarchie kann zu Problemen beim Öffnen oder Erstellen der gesicherten Projektm">
+</Event><Event ErrorLevel="2" Project="AccessDBConector" Source="D:\dotnet\src\julian\AccessDBConector\AccessDBConector\AccessDBConector.csproj" Description="Die Projektdatei kann nicht zum Aktualisieren geöffnet werden.  ">
+</Event><Event ErrorLevel="1" Project="CTMapUtils" Source="..\CTMapUtils\CTMapUtils.csproj" Description="Warnung: Die Sicherungskopie der Projektdatei wird in einem relativen Pfad erstellt, der vom relativen Pfad der ursprünglichen Projektmappe abweicht. Der Unterschied in der Ordnerhierarchie kann zu Problemen beim Öffnen oder Erstellen der gesicherten Projektm">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\CTMapUtils.csproj" Description="Projektdatei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\CTMapUtils.csproj">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\CollisionEntity.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\CollisionEntity.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\CollisionManager.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\CollisionManager.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\CollisionResult.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\CollisionResult.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Grid.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Grid.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\GridElement.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\GridElement.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Map.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Map.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Map.designer.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Map.designer.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\MapParser.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\MapParser.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Properties\AssemblyInfo.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\RandomMap.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\RandomMap.cs">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\0.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\0.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\10.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\10.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\11.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\11.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\12.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\12.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\13.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\13.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\14.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\14.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\15.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\15.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\3.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\3.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\5.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\5.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\6.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\6.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\7.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\7.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Ressources\9.jpg" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Ressources\9.jpg">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\Map.resx" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTMapUtils\Map.resx">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\CTMapUtils.csproj" Description="Projekt erfolgreich konvertiert">
+</Event><Event ErrorLevel="3" Project="CTMapUtils" Source="..\CTMapUtils\CTMapUtils.csproj" Description="Converted">
+</Event><Event ErrorLevel="1" Project="CTEngine" Source="..\CTEngine\CTEngine.csproj" Description="Warnung: Die Sicherungskopie der Projektdatei wird in einem relativen Pfad erstellt, der vom relativen Pfad der ursprünglichen Projektmappe abweicht. Der Unterschied in der Ordnerhierarchie kann zu Problemen beim Öffnen oder Erstellen der gesicherten Projektm">
+</Event><Event ErrorLevel="0" Project="CTEngine" Source="..\CTEngine\CTEngine.csproj" Description="Projektdatei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTEngine\CTEngine.csproj">
+</Event><Event ErrorLevel="0" Project="CTEngine" Source="..\CTEngine\CTSprite.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTEngine\CTSprite.cs">
+</Event><Event ErrorLevel="0" Project="CTEngine" Source="..\CTEngine\CTSprite.Designer.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTEngine\CTSprite.Designer.cs">
+</Event><Event ErrorLevel="0" Project="CTEngine" Source="..\CTEngine\Sprite.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTEngine\Sprite.cs">
+</Event><Event ErrorLevel="0" Project="CTEngine" Source="..\CTEngine\Properties\AssemblyInfo.cs" Description="Datei erfolgreich gesichert als G:\AE\CrazyTaxi-0.3\Backup\CTEngine\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="CTEngine" Source="..\CTEngine\CTEngine.csproj" Description="Projekt erfolgreich konvertiert">
+</Event><Event ErrorLevel="3" Project="CTEngine" Source="..\CTEngine\CTEngine.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="CrazyTaxi.sln" Description="Die Projektmappe wurde erfolgreich konvertiert.">
+</Event><Event ErrorLevel="3" Project="" Source="CrazyTaxi.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="..\CTMapUtils\CTMapUtils.csproj" Description="Überprüfung abgeschlossen: Upgrade der Projektdateien nicht erforderlich.">
+</Event><Event ErrorLevel="0" Project="CTEngine" Source="..\CTEngine\CTEngine.csproj" Description="Überprüfung abgeschlossen: Upgrade der Projektdateien nicht erforderlich.">
+</Event></UpgradeLog>
