@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTMapUtils", "CTMapUtils\CTMapUtils.csproj", "{FC0059BE-538E-4A0D-9178-0CB322292BAC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTTestForm", "CTTestForm\CTTestForm.csproj", "{DBC7D47E-E8E7-498D-A59D-146A0F9329C9}"

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CTMapUtils">
+</Property><Property Name="Projektmappendatei" Value="F:\maputils_neu\CTMapUtils\CTMapUtils.sln">
+</Property><Property Name="Date" Value="Mittwoch, 13. Juni 2012">
+</Property><Property Name="Time" Value="08:22">
+</Property></Properties><Event ErrorLevel="0" Project="CTMapUtils" Source="CTMapUtils\CTMapUtils.csproj" Description="Projekt erfolgreich konvertiert">
+</Event><Event ErrorLevel="3" Project="CTMapUtils" Source="CTMapUtils\CTMapUtils.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="CTTestForm" Source="CTTestForm\CTTestForm.csproj" Description="Projekt erfolgreich konvertiert">
+</Event><Event ErrorLevel="3" Project="CTTestForm" Source="CTTestForm\CTTestForm.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="CTMapUtils.sln" Description="Die Projektmappe wurde erfolgreich konvertiert.">
+</Event><Event ErrorLevel="3" Project="" Source="CTMapUtils.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="CTMapUtils" Source="CTMapUtils\CTMapUtils.csproj" Description="Überprüfung abgeschlossen: Upgrade der Projektdateien nicht erforderlich.">
+</Event><Event ErrorLevel="0" Project="CTTestForm" Source="CTTestForm\CTTestForm.csproj" Description="Überprüfung abgeschlossen: Upgrade der Projektdateien nicht erforderlich.">
+</Event></UpgradeLog>

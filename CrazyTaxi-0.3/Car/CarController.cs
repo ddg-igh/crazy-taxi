@@ -14,8 +14,8 @@ namespace CrazyTaxi.Car
         {
             rotation = 0;
             speed = 0;
-            maxSpeed = 10;
-            minSpeed = -5;
+            maxSpeed = 5;
+            minSpeed = -3;
         }
 
         public CarController(Rectangle rect)
@@ -23,8 +23,8 @@ namespace CrazyTaxi.Car
             bounds = rect;
             rotation = 0;
             speed = 0;
-            maxSpeed = 10;
-            minSpeed = -5;
+            maxSpeed = 5;
+            minSpeed = -3;
         }
 
         public override int Speed
@@ -43,7 +43,7 @@ namespace CrazyTaxi.Car
             {
                 if (speed != 0)
                 {
-                    rotation += 10;
+                    rotation += 5;
                 }
             }
             else if (key == (int)keys.left) 
@@ -51,7 +51,7 @@ namespace CrazyTaxi.Car
                 
                 if (!speed.Equals(0))
                 {
-                    rotation -= 10;
+                    rotation -= 5;
                 }
             }            
             else if (key==(int)keys.up)

@@ -6,7 +6,6 @@ using System.Drawing;
 using CrazyTaxi.Car;
 using System.IO;
 using CTMapUtils;
-using CTEngine;
 using System.Windows.Forms;
 using System.Threading;
 using System.Drawing.Imaging;
@@ -21,17 +20,22 @@ namespace CrazyTaxi
             Running = 0,
             Pause = 1,
             Loading = 2,
+            MiniMap = 3
         }
 
-        private Image gameField=new Bitmap(1,1,PixelFormat.Format32bppPArgb);
+        public GameState State { private set; get; }
+        public long Score { private set; get; }
+
+        private Image gameField = new Bitmap(1, 1, PixelFormat.Format32bppPArgb);
+        private Image miniMap;
         private Map map;
         private Size size;
         private CarImpl car;
         private CollisionEntity entity;
         private bool initialized=false;
         private volatile bool loaded = false;
-        public GameState State{private set; get;}
         private Mission mission;
+        private Size gameSize;
 
         public Game()
         {
@@ -42,9 +46,9 @@ namespace CrazyTaxi
         {
             if (!initialized)
             {
+                Score = 0;
                 initialized = true;
                 size = new Size(dim[0], dim[1]);
-                //map.Collision.SetDebugTarget(parent);
                 Thread thread = new Thread(this.loadMap);
                 thread.Start();
             }
@@ -53,27 +57,48 @@ namespace CrazyTaxi
         private void loadMap()
         {
             DateTime start;
+            gameSize = new Size(size.Width * 10, size.Height * 10);
             //Bilderordner angebe     
             MapParser.ImagePath = string.Format(@"{0}{1}MapImages", Directory.GetCurrentDirectory(), Path.DirectorySeparatorChar);
             start = DateTime.Now;
-            map = MapParser.Load(100, 100);
+
+            Random rnd = new Random();
+            int random = rnd.Next(0, 3);
+            switch (random) 
+            {
+                case 0:
+                    map = MapParser.Load(100, 100, MapParser.SpecialMapElement.RiverCrossing);
+                    break;
+                case 1:
+                    map = MapParser.Load(100, 100, MapParser.SpecialMapElement.None);
+                    break;
+                case 2:
+                    map = MapParser.Load(100, 100, MapParser.SpecialMapElement.CentralPark);
+                    break;
+            }
+            
+
             Console.WriteLine("MapParser.Load:" + (System.DateTime.Now - start).ToString());
             //Karte vergrößert sich automatisch mit GUI
             //Karte im GUI anzeigen
             start = DateTime.Now;
-            map.Initialize(size);
+            map.Initialize(gameSize);
             Console.WriteLine("MapParser.init:" + (System.DateTime.Now - start).ToString());
             //Karte an Größe des GUIs anpassen
             start = DateTime.Now;
-            gameField = map.DrawImage(new Size(size.Width * 10, size.Height * 10));
+            gameField = map.DrawImage(gameSize);
+            miniMap=CT_Helper.resizeImage(gameField,size);
             Console.WriteLine("MapParser.draw:" + (System.DateTime.Now - start).ToString());
 
+
+
             entity = map.Collision.AddEntity(new Size(12, 23));
-            car = new CarImpl(new int[]{size.Width,size.Height}, entity);
+            car = new CarImpl(new int[]{size.Width,size.Height},gameField.Size, entity);
+            car.Location = map.GetRandomTilePosition(true, gameSize);
 
             loaded = true;
             this.State=GameState.Running;
-            mission = new Mission(100,100,gameField.Width-100,gameField.Height-100,50000,car,gameField.Height,gameField.Width);
+            mission = new Mission(map.GetRandomTilePosition(true, gameSize),map.GetRandomTilePosition(true, gameSize),5000000,car,gameField.Height,gameField.Width);
         }
 
         private void updateGame()
@@ -83,6 +108,13 @@ namespace CrazyTaxi
                 Rectangle bounds = new Rectangle(0, 0, gameField.Width, gameField.Height);
                 car.Move(bounds);
                 mission.update(15);
+
+                if (mission.Finished)
+                {
+                    Score=Score+mission.GetFinishedScore();
+                    mission=nextMission();
+                }
+                
             }
         }
 
@@ -95,36 +127,39 @@ namespace CrazyTaxi
             {
                 return;
             }
-            int x = size.Width / 2 - car.Location.X;
-            int y = size.Height / 2 - car.Location.Y;
-
-            if (x > 0)
+            else if(GameState.MiniMap.Equals(State))
             {
-                x = 0;
+                g.DrawImageUnscaled(miniMap,0,0);
+                car.drawMiniMap(g);
+                mission.drawMiniMap(g,size.Width,size.Height);
             }
-            else if (x < size.Width - gameField.Width)
-            {
-                x = size.Width - gameField.Width;
-            }
+            else {
+                int x = calculateFramePosition(gameField.Width,size.Width,car.Location.X);
+                int y = calculateFramePosition(gameField.Height,size.Height,car.Location.Y);
 
-            if (y > 0)
-            {
-                y = 0;
+                //g.DrawImage(gameField,new Rectangle(0,0,_Dimension[0], _Dimension[1]),new Rectangle(x,y,_Dimension[0], _Dimension[1]),GraphicsUnit.Pixel);
+                g.DrawImageUnscaled(gameField, x, y);
+                car.draw(g);
+                mission.draw(g,x,y);
             }
-            else if (y < size.Height - gameField.Height)
-            {
-                y = size.Height - gameField.Height;
-            }
-
-            //g.DrawImage(gameField,new Rectangle(0,0,_Dimension[0], _Dimension[1]),new Rectangle(x,y,_Dimension[0], _Dimension[1]),GraphicsUnit.Pixel);
-            g.DrawImageUnscaled(gameField, x, y);
-            car.draw(g, gameField.Width, gameField.Height);
-            mission.draw(g,x,y);
-            
-
-           //gameScreen.Invalidate();
         }
 
+
+        private int calculateFramePosition(int gameFieldEdge,int screenEdge, int carPosition)
+        {
+            int result = screenEdge / 2 - carPosition;
+
+            if (result > 0)
+            {
+                result = 0;
+            }
+            else if (result < screenEdge - gameFieldEdge)
+            {
+                result = screenEdge - gameFieldEdge;
+            }
+
+            return result;
+        }
 
         public bool changeGameState(bool pause)
         {
@@ -152,22 +187,28 @@ namespace CrazyTaxi
                 return;
             }
 
-            if (key == Keys.Up)
-            {
-                car.Up = true;
-            }
-            else if (key == Keys.Down)
-            {
-                car.Down = true;
-            }
-            else if (key == Keys.Left)
-            {
-                car.Left = true;
-            }
-            else if (key == Keys.Right)
-            {
-                car.Right = true;
-            }
+            if (car != null){
+                if (key == Keys.Tab)
+                {
+                    State=GameState.MiniMap;
+                }
+                if (key == Keys.Up)
+                {
+                    car.Up = true;
+                }
+                else if (key == Keys.Down)
+                {
+                    car.Down = true;
+                }
+                else if (key == Keys.Left)
+                {
+                    car.Left = true;
+                }
+                else if (key == Keys.Right)
+                {
+                    car.Right = true;
+                }
+             }
         }
 
         public void keyUp(Keys key)
@@ -176,23 +217,34 @@ namespace CrazyTaxi
             {
                 return;
             }
+            if (car != null)
+            {
+                if (key == Keys.Tab)
+                {
+                    State=GameState.Running;
+                }
+                else if (key == Keys.Up)
+                {
+                    car.Up = false;
+                }
+                else if (key == Keys.Down)
+                {
+                    car.Down = false;
+                }
+                else if (key == Keys.Left)
+                {
+                    car.Left = false;
+                }
+                else if (key == Keys.Right)
+                {
+                    car.Right = false;
+                }
+            }
+        }
 
-            if (key == Keys.Up)
-            {
-                car.Up = false;
-            }
-            else if (key == Keys.Down)
-            {
-                car.Down = false;
-            }
-            else if (key == Keys.Left)
-            {
-                car.Left = false;
-            }
-            else if (key == Keys.Right)
-            {
-                car.Right = false;
-            }
+        private Mission nextMission()
+        {
+             return new Mission(map.GetRandomTilePosition(true, gameSize), map.GetRandomTilePosition(true, gameSize), 5000000, car, gameField.Height, gameField.Width);
         }
 
     }

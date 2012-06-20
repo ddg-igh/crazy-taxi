@@ -13,7 +13,6 @@ using System.Drawing.Drawing2D;
 using CrazyTaxi.Car;
 using System.IO;
 using CTMapUtils;
-using CTEngine;
 
 
 namespace CrazyTaxi
@@ -33,7 +32,9 @@ namespace CrazyTaxi
 
         private Game game;
         private bool _initialized = false;
-        
+
+        private int score = 1;
+        private Pong pong;
 
         //Wird Verwendet da Cursor.hide/show nicht immer bzw nicht funktioniert 
         // using System.Runtime.InteropServices;
@@ -123,6 +124,8 @@ namespace CrazyTaxi
                 this.SetStyle(ControlStyles.UserPaint, true);
                 this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
+                pong=new Pong(new Size(_Dimension[0],_Dimension[1]));
+
                 _initialized = true;
             }
         }
@@ -196,6 +199,8 @@ namespace CrazyTaxi
             }
         }
 
+        private List<Keys> keyList = new List<Keys>();
+
         private void CT_UI_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -204,13 +209,34 @@ namespace CrazyTaxi
             }
             else
             {
-                game.keyDown(e.KeyCode);
+
+                if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
+                {
+                    game.keyDown(e.KeyCode);
+                }
+                else
+                {
+                    if (!keyList.Contains(e.KeyCode))
+                    {
+                        keyList.Add(e.KeyCode);
+                    }
+                }
             }
         }
 
         private void CT_UI_KeyUp(object sender, KeyEventArgs e)
         {
-            game.keyUp(e.KeyCode);
+            if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
+            {
+                game.keyUp(e.KeyCode);
+            }
+            else
+            {
+                if (keyList.Contains(e.KeyCode))
+                {
+                    keyList.Remove(e.KeyCode);
+                }
+            }
         }
 
         private void showMenu(bool state)
@@ -351,14 +377,12 @@ namespace CrazyTaxi
         private void CT_UI_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
             
             if (Game.GameState.Pause.Equals(game.State))
             {
                 g.DrawImage(img, new Point(x, y));
             }
-            else if (Game.GameState.Running.Equals(game.State))
+            else if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
             {
                 game.draw(g);
                 long difference = (System.DateTime.Now - startTime).Milliseconds;
@@ -368,13 +392,16 @@ namespace CrazyTaxi
                     fps = 1000 / difference;
                 }
                 g.DrawString("fps:" + System.Math.Round(fps).ToString(), DefaultFont, Brushes.Yellow, 10, 10);
+                g.DrawString("Score:" + game.Score.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 100, 10);
 
                 this.Invalidate();
             }
             else
             {
+                long difference = (System.DateTime.Now - startTime).Milliseconds;
+                pong.Update(difference,keyList);
+                pong.Draw(g);
                 g.DrawString("Loading", DefaultFont, Brushes.Yellow, _Dimension[0] / 2, _Dimension[1] / 2);
-                Thread.Sleep(100);
                 this.Invalidate();
             }
 

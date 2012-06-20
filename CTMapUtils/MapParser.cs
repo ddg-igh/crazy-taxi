@@ -6,12 +6,20 @@ using System.Text;
 using System.Drawing;
 using System.Xml.Serialization;
 using System.IO;
+using System.Drawing.Imaging;
 
 namespace CTMapUtils
 {
     public class MapParser
     {
-        private static Dictionary<String, Image> cache = new Dictionary<string, Image>();
+        public enum SpecialMapElement
+        {
+            None,
+            CentralPark,
+            RiverCrossing
+        }
+
+        private static Dictionary<String, Bitmap> imageCache = new Dictionary<string, Bitmap>();
         private static string imagePath = "C:\\Tiles\\";
         public static string ImagePath
         {
@@ -33,41 +41,12 @@ namespace CTMapUtils
             }
         }
 
-        public static Map Load(int width, int height)
+        public static Map Load(int width, int height, SpecialMapElement specialMapElement)
         {
             RandomMap rndMap = new RandomMap();
-            Map returnvalue = rndMap.GenerateRandomMap(width, height);
+            Map returnvalue = rndMap.GenerateRandomMap(width, height, specialMapElement);
 
             return returnvalue;
-
-            //List<GridElement> list = new List<GridElement>();
-
-            //for (var i = 0; i < 16; i++)
-            //{
-            //    list.Add(new GridElement() { ImageId = i + "", PassableSides = i, RandomPlacableSides = i });
-            //}
-
-            //Grid grid = null;
-            //try
-            //{
-            //    using (var fileStream = System.IO.File.Open(System.IO.Directory.GetCurrentDirectory() + "\\ElementList.xml", System.IO.FileMode.OpenOrCreate))
-            //    {
-            //        var serializer = new XmlSerializer(typeof(List<GridElement>));
-            //        serializer.Serialize(fileStream, list);
-            //    }
-
-            //    //returnvalue = new Map(grid);
-            //}
-            //catch (Exception)
-            //{
-            //}
-
-            //return null;
-            ////GridElement[][] arr = null;
-
-            ////var grid = new Grid();
-
-            ////grid.GridElementCollection[0][0] = new GridElement() { ImageId
         }
 
         public static Map Load(string path)
@@ -94,32 +73,19 @@ namespace CTMapUtils
 
         public static Image GetImageById(string imageId)
         {
-            Image returnvalue = null;
+            Bitmap returnvalue = null;
 
             try
             {
                 var path = ImagePath + imageId + ".";
-                if (File.Exists(path + "jpg")){
-                    if (cache.ContainsKey(path + "jpg"))
-                    {
-                        cache.TryGetValue(path + "jpg", out returnvalue);
-                    }
-                    else
-                    {
-                        returnvalue = Image.FromFile(path + "jpg", true);
-                        cache.Add(path + "jpg", returnvalue);
-                    }
-                }
-                else if (File.Exists(path + "jpeg")){
-                    if (cache.ContainsKey(path + "jpeg"))
-                    {
-                        cache.TryGetValue(path + "jpeg", out returnvalue);
-                    }
-                    else
-                    {
-                        returnvalue = Image.FromFile(path + "jpeg", true);
-                        cache.Add(path + "jpeg", returnvalue);
-                    }
+                if (!imageCache.TryGetValue(path, out returnvalue))
+                {
+                    if (File.Exists(path + "jpg"))
+                        returnvalue = new Bitmap(Image.FromFile(path + "jpg", true));
+                    else if (File.Exists(path + "jpeg"))
+                        returnvalue = new Bitmap(Image.FromFile(path + "jpeg", true));
+
+                    imageCache.Add(path, returnvalue);
                 }
             }
             catch (Exception)

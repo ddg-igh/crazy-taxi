@@ -13,6 +13,9 @@ namespace CTTestForm
 {
     public partial class Form1 : Form
     {
+        //Vorsicht! Kann je nach gewählter Auflösung sehr lange dauern!!! - AHAU 
+        const bool B_SAVEIMAGE = true;
+
         int deg = 0;
         System.Drawing.Point pt = new Point(100, 120);
         System.Threading.Timer t;
@@ -28,7 +31,7 @@ namespace CTTestForm
              * */
             MapParser.ImagePath = System.IO.Directory.GetCurrentDirectory() + "\\Ressources";
             //MapParser.Load läd eine Map aus der angegebenen XML-Datei (hier: "Testmap.xml" im Anwendungsverzeichnis
-            map = CTMapUtils.MapParser.Load(10, 10);
+            map = CTMapUtils.MapParser.Load(50, 50,MapParser.SpecialMapElement.RiverCrossing);
             //var map = MapParser.Load(System.IO.Directory.GetCurrentDirectory() + "\\Testmap.xml");
             //Die Map ist ein UserControl, verhält sich also wie jedes Steuerelement auf einer Form (z.B. TextBox, Label, ...)
             //DockStyle.Fill sorgt dafür, dass sie die komplette Form ausfüllt
@@ -38,13 +41,21 @@ namespace CTTestForm
             //map.Initialize(this.Size);
             //Hier wird die Map noch als UserControl zum Form hinzugefügt
             //Controls.Add(map);
-            
-            var size = new Size(this.Width - 5, this.Height - 30);
-            map.Initialize(/*size*/);
+
+            var size = new Size(this.Width - 10, this.Height - 10);
+            map.Initialize(size);
             pb = new PictureBox() { Image = map.DrawImage(size), Size = size };
+
+            if (B_SAVEIMAGE)
+            {
+                Image saveImage = map.DrawImage(new Size(4096, 4096));
+                saveImage.Save(@"C:\"+DateTime.Now.Ticks.ToString()+".jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+            }
+            
             this.Controls.Add(pb);
 
-            //Zum Testen der Kollisionserkennung
+            ////Zum Testen der Kollisionserkennung
+            //map.Collision.SetDebugTarget(this);
             //var entity = map.Collision.AddEntity(new Size(50, 80));
             //t = new System.Threading.Timer(tCallback, entity, 1000, 100);
         }
@@ -52,7 +63,9 @@ namespace CTTestForm
         private delegate void td(CollisionEntity et);
         private void test(CollisionEntity entity)
         {
-            entity.Update(pt, deg, true);
+            map.Collision.ResetDebugOutput();
+            var res = entity.Update(pt, deg, true);
+            label1.Text = "Front: " + res.Front;
         }
 
         private void tCallback(object arg)
@@ -64,7 +77,7 @@ namespace CTTestForm
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
-            var size = new Size(this.Width - 5, this.Height - 30);
+            var size = new Size(this.Width - 10, this.Height - 10);
             pb.Image = map.DrawImage(size);
             pb.Size = size;
         }

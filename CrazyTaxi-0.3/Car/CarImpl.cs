@@ -12,10 +12,11 @@ namespace CrazyTaxi.Car
     class CarImpl : AbstractCar
     {
         private int[] dim;
+        private Size gameFieldSize;
         private CollisionEntity entity;
         public CarController carCon { private set; get; }
 
-        public CarImpl(int[] dim, CollisionEntity entity) 
+        public CarImpl(int[] dim,Size gameFieldSize, CollisionEntity entity) 
         {
             this.dim = dim;
             this.Angle = 0;
@@ -24,7 +25,7 @@ namespace CrazyTaxi.Car
             this.entity = entity;                
             this.carCon = new CarController();
             this.Location = new Point(dim[0] / 2 - this.Car.Width / 2, dim[1] / 2 - this.Car.Height / 2);
-               
+            this.gameFieldSize = gameFieldSize;   
         }
 
         private void Move(int key,Rectangle bounds) 
@@ -50,16 +51,27 @@ namespace CrazyTaxi.Car
             }
             else if (Up)
             {
-               // if (!entity.Update(new Point(Location.X-Size.Width/2, Location.Y-Size.Height/2), (int)Angle-90,true).Front){
+                Point cposition = new Point(Location.X + 23 / 2,Location.Y + 12 / 2);
+                if (entity.Update(cposition, Convert.ToInt32(Angle + 90), true).Front)
+                {
+                    carCon.Speed = 0;
+                }
+                else
+                {
                     Move((int)CarController.keys.up, bounds);
-               // }
+                }
             }
             else if (Down)
             {
-               // if (!entity.Update(new Point(Location.X - Size.Width / 2, Location.Y - Size.Height / 2), (int)Angle - 90, false).Back)
-               // {
+                Point cposition = new Point(Location.X + 23 / 2, Location.Y + 12 / 2);
+                if (entity.Update(cposition, Convert.ToInt32(Angle + 90), false).Back)
+                {
+                    carCon.Speed = 0;
+                }
+                else
+                {
                     Move((int)CarController.keys.down, bounds);
-                //}
+                }
             }
             else
             {
@@ -103,11 +115,11 @@ namespace CrazyTaxi.Car
         }
 
 
-        public void draw(Graphics g,int gameFieldWidth,int gameFieldHeight)
+        public void draw(Graphics g)
         {
             
-            int xP = calculateLocation(dim[0],gameFieldWidth,this.Location.X);
-            int yP = calculateLocation(dim[1], gameFieldHeight, this.Location.Y);
+            int xP = calculateLocation(dim[0],gameFieldSize.Width,this.Location.X);
+            int yP = calculateLocation(dim[1], gameFieldSize.Height, this.Location.Y);
 
            System.Drawing.Drawing2D.Matrix m = g.Transform;
             //here we do not need to translate, we rotate at the specified point
@@ -116,8 +128,22 @@ namespace CrazyTaxi.Car
             m.RotateAt(this.Angle, new PointF(x, y), System.Drawing.Drawing2D.MatrixOrder.Append);
             g.Transform = m;
             g.DrawImageUnscaled(this.Car, new Point(xP, yP));
-            g.ResetTransform();
-                
+            g.ResetTransform();          
+        }
+
+        private int circleRadius = 2;
+        public void drawMiniMap(Graphics g)
+        {
+            
+            int x = dim[0] * Location.X / gameFieldSize.Width;
+            int y = dim[1] * Location.Y / gameFieldSize.Height;
+
+            g.FillEllipse(Brushes.Green,x - circleRadius,y - circleRadius,circleRadius * 2,circleRadius * 2);
+            
+            if (++circleRadius > 15)
+            {
+                circleRadius = 2;
+            }
         }
 
         private int calculateLocation(int displayEdge,int gameFieldEdge,int position)

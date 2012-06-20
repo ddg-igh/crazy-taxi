@@ -18,6 +18,8 @@ namespace CTMapUtils
         private int gridElementWidth;
         private int gridElementHeight;
 
+        private Random rnd = new Random();
+
         public CollisionManager Collision
         {
             get;
@@ -68,31 +70,32 @@ namespace CTMapUtils
 
         public Image DrawImage(Size size)
         {
-            Bitmap returnvalue = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppPArgb);
-            Graphics g=Graphics.FromImage(returnvalue);
+            Bitmap returnvalue = new Bitmap(size.Width, size.Height,PixelFormat.Format32bppPArgb);
+            Graphics g = Graphics.FromImage(returnvalue);
 
             for (var x = 0; x < MapGrid.GridElementCollection.Length; x++)
             {
-                var column = MapGrid.GridElementCollection[x];
-                for (var y = 0; y < column.Length; y++)
+                var row = MapGrid.GridElementCollection[x];
+                for (var y = 0; y < row.Length; y++)
                 {
-                    var gridElement = column[y];
+                    var gridElement = row[y];
 
-                    var elementWidth = (int)((MapGrid.Width / MapGrid.GridElementCollection.Length) * getScaleFactorWidth(size.Width));
-                    var elementHeight = (int)((MapGrid.Height / column.Length) * getScaleFactorHeight(size.Height));
+                    var elementWidth = (int)((MapGrid.Width / row.Length) * getScaleFactorWidth(size.Width));
+                    var elementHeight = (int)((MapGrid.Height / MapGrid.GridElementCollection.Length) * getScaleFactorHeight(size.Height));
 
-                    Bitmap image = (Bitmap)MapParser.GetImageById(gridElement.ImageId);
-     
+                    var image = (Bitmap)MapParser.GetImageById(gridElement.ImageId);
+
+                    //image = (Bitmap)image.GetThumbnailImage(elementWidth, elementHeight, null, IntPtr.Zero);
+
                     g.DrawImage(image, elementWidth * x, elementHeight * y, elementWidth, elementHeight);
-                    /*for (var bx = 0; bx < elementWidth; bx++)
+                 /*   for (var bx = 0; bx < elementWidth; bx++)
                     {
                         for (var by = 0; by < elementHeight; by++)
                         {
                             var cl = image.GetPixel(bx, by);
                             returnvalue.SetPixel(bx + (elementWidth * x), by + (elementHeight * y), cl);
                         }
-                    }*/
-
+                    }  */
                 }
             }
 
@@ -108,34 +111,34 @@ namespace CTMapUtils
             this.Size = uiSize;
 
             //x=breitengrad (x-achse)
-            //elementBoxes = new PictureBox[MapGrid.GridElementCollection.Length][];
+            elementBoxes = new PictureBox[MapGrid.GridElementCollection.Length][];
             for (var x = 0; x < MapGrid.GridElementCollection.Length; x++)
             {
-                //elementBoxes[x] = new PictureBox[MapGrid.GridElementCollection[x].Length];
+                elementBoxes[x] = new PictureBox[MapGrid.GridElementCollection[x].Length];
                 var column = MapGrid.GridElementCollection[x];
                 for (var y = 0; y < column.Length; y++)
                 {
                     var gridElement = column[y];
-                   // var pictureBox = new System.Windows.Forms.PictureBox();
+                    var pictureBox = new System.Windows.Forms.PictureBox();
                     //pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
 
                     gridElementWidth = (int)((MapGrid.Width / MapGrid.GridElementCollection.Length) * ScaleFactorWidth);
                     gridElementHeight = (int)((MapGrid.Height / column.Length) * ScaleFactorHeight);
 
-                    //pictureBox.Width = (int)gridElementWidth;
-                   // pictureBox.Height = (int)gridElementHeight;
-                   // var image = MapParser.GetImageById(gridElement.ImageId);
-                   // pictureBox.Image = image;
+                    pictureBox.Width = (int)gridElementWidth;
+                    pictureBox.Height = (int)gridElementHeight;
+                    var image = MapParser.GetImageById(gridElement.ImageId);
+                    pictureBox.Image = image;
                     //pictureBox.BorderStyle = BorderStyle.FixedSingle;
-                   // pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
 
                     var boxX = gridElementWidth * x;
                     var boxY = gridElementHeight * y;
 
-                   // pictureBox.Left = (int)boxX;
-                   // pictureBox.Top = (int)boxY;
+                    pictureBox.Left = (int)boxX;
+                    pictureBox.Top = (int)boxY;
 
-                    //elementBoxes[x][y] = pictureBox;
+                    elementBoxes[x][y] = pictureBox;
 
                     //Auskommentiert, um die Testausgaben der Kollision zu sehen
                     //this.Controls.Add(elementBoxes[x][y]);
@@ -199,293 +202,51 @@ namespace CTMapUtils
         {
             return new System.Windows.Vector(0, (facing == LeftRightDirections.Down ? carSize.Height : -carSize.Height));
         }
-        ///// <summary>
-        ///// Debugmethode: zeichnet eine Linie auf das UserControl
-        ///// </summary>
-        ///// <param name="l"></param>
-        ///// <param name="c"></param>
-        //private void drawLine(Line l, Color c)
-        //{
-        //    var points = l.AllPoints;
-        //    for (var i = 0; i < points.Count; i++)
-        //    {
-        //        var point = points[i];
-        //        //point.X += 50;
-        //        //point.Y += 50;
-        //        Controls.Add(new Label() { BackColor = c, Text = "", Location = point, Width = 5, Height = 5 });
-        //    }
-        //}
-
-        //ToDo: optimieren, in Line statt mit Point mit Vector arbeiten
-
-        //public CollisionResult CheckCollision(Point carPosition, Size carSize, double rotationDegrees, bool drivingForward)
-        //{
-        //    var st = DateTime.Now;
-        //    //Die Bewegungsrichtung abhängig von der Rotation
-        //    System.Windows.Vector corner;
-        //    System.Windows.Vector middle = new System.Windows.Vector(carPosition.X, carPosition.Y);
-
-        //    //Auf welchem Gridelement ist der Mittelpunkt des Autos (=dieses element muss nicht kontrolliert werden
-        //    var carGridX = (int)(carPosition.X / this.gridElementWidth);
-        //    var carGridY = (int)(carPosition.Y / this.gridElementHeight);
-        //    var ctrl1 = new Label() { BackColor = Color.Blue, Location = carPosition, Width = 5, Height = 5 };
-        //    Controls.Add(ctrl1);
-        //    ctrl1.BringToFront();
-
-        //    //Welche Seiten des Autos müssen kontrolliert werden?
-        //    var sides = new Line[3];
-
-        //    if (drivingForward)
-        //    {
-        //        //Ecke oben rechts
-        //        corner = new System.Windows.Vector(carPosition.X + (carSize.Width / 2), carPosition.Y - (carSize.Height / 2));
-        //        corner -= middle;
-        //        corner = rotateVector(corner, rotationDegrees);
-        //        corner += middle;
 
 
-        //        //Obere Seite, Vektor zeigt nach rechts
-        //        sides[0] = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), rotateVector(getFrontBackVector(carPosition, carSize, FrontBackDirections.Left), rotationDegrees));
-        //        //Rechte Seite, Vektor zeigt nach oben
-        //        sides[1] = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Down), rotationDegrees));
+        //public Point GetStartPoint(Map _Map)
 
-
-        //        //Ecke oben links
-        //        corner = new System.Windows.Vector(carPosition.X - (carSize.Width / 2), carPosition.Y - (carSize.Height / 2));
-        //        corner -= middle;
-        //        corner = rotateVector(corner, rotationDegrees);
-        //        corner += middle;
-
-        //        //Linke Seite, Vektor zeigt nach oben
-        //        sides[2] = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Down), rotationDegrees));
-        //    }
-        //    else
-        //    {
-        //        //Ecke unten rechts
-        //        corner = new System.Windows.Vector(carPosition.X + (carSize.Width / 2), carPosition.Y + (carSize.Height / 2));
-        //        corner -= middle;
-        //        corner = rotateVector(corner, rotationDegrees);
-        //        corner += middle;
-
-
-        //        //Obere Seite, Vektor zeigt nach rechts
-        //        sides[0] = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), rotateVector(getFrontBackVector(carPosition, carSize, FrontBackDirections.Left), rotationDegrees));
-        //        //Rechte Seite, Vektor zeigt nach oben
-        //        sides[1] = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Up), rotationDegrees));
-
-
-        //        //Ecke unten links
-        //        corner = new System.Windows.Vector(carPosition.X - (carSize.Width / 2), carPosition.Y + (carSize.Height / 2));
-        //        corner -= middle;
-        //        corner = rotateVector(corner, rotationDegrees);
-        //        corner += middle;
-
-        //        //Linke Seite, Vektor zeigt nach oben
-        //        sides[2] = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Up), rotationDegrees));
-        //    }
-
-        //    var returnvalue = new CollisionResult();
-
-        //    var currentCarElement = this.MapGrid.GridElementCollection[carGridX][carGridY];
-        //    for (int i1 = 0; i1 < 3; i1++)
-        //    {
-        //        List<Point> points = sides[i1].AllPoints;
-        //        for (var i = 0; i < points.Count; i++)
-        //        {
-        //            var point = points[i];
-
-        //            var px = (point.X / gridElementWidth);
-        //            var py = (point.Y / gridElementHeight);
-        //            var ctrl = new Label() { BackColor = Color.Green, Text = "", Location = point, Width = 5, Height = 5 };
-        //            if (px != carGridX || py != carGridY)
-        //            {
-        //                if (MapGrid.GridElementCollection[px][py].PassableSides == 0)
-        //                {
-        //                    if (i1 == 0)
-        //                    {
-        //                        if (drivingForward)
-        //                            returnvalue.Front = true;
-        //                        else
-        //                            returnvalue.Back = true;
-        //                    }
-        //                    else if (i1 == 1)
-        //                    {
-        //                        returnvalue.Right = true;
-        //                    }
-        //                    else
-        //                        returnvalue.Left = true;
-
-        //                    ctrl.BackColor = Color.Red;
-        //                }
-        //            }
-        //            this.Controls.Add(ctrl);
-        //            ctrl.BringToFront();
-        //        }
-        //    }
-
-        //    var diff = DateTime.Now - st;
-        //    MessageBox.Show(diff.TotalMilliseconds + "");
-        //    return returnvalue;
-        //}
-
-
-        //ToDo: Start und Endzeit entfernen, Zeichnen der Punkte entfernen
-        /// <summary>
-        /// </summary>
-        /// <param name="carPosition">Position (Mittelpunkt) des Autos</param>
-        /// <param name="carSize">Größe des Autos</param>
-        /// <param name="rotationDegrees">Rotation des Rechtecks (0 = Auto ist nach oben gerichtet, 90 = Auto ist nach rechts gerichtet, ...</param>
-        /// <param name="movementDegrees">Richtung, in die das Auto sich bewegt (Auf der Form, nicht abhängig von der Rotation => Bei 0 bewegt sich das Auto nach norden, egal wie es rotiert ist)</param>
-        /// <returns></returns>
-        /*public CollisionResult CheckCollision(Point carPosition, Size carSize, double rotationDegrees, double movementDegrees)
+        public Point GetRandomTilePosition(bool _bIsPassable, System.Drawing.Size size)
         {
-            var st = DateTime.Now;
-            //Die Bewegungsrichtung abhängig von der Rotation
-            var relativeMovement = Math.Abs((rotationDegrees - 360) - movementDegrees) % 360;
-            System.Windows.Vector corner;
-            System.Windows.Vector middle = new System.Windows.Vector(carPosition.X, carPosition.Y);
+            Point returnPoint = new Point();
 
-            //Auf welchem Gridelement ist der Mittelpunkt des Autos (=dieses element muss nicht kontrolliert werden
-            var carGridX = (int)(carPosition.X / this.gridElementWidth);
-            var carGridY = (int)(carPosition.Y / this.gridElementHeight);
-            var ctrl1 = new Label() { BackColor = Color.Blue, Location = carPosition, Width = 5, Height = 5 };
-            Controls.Add(ctrl1);
-            ctrl1.BringToFront();
+            int basePointX = 0;
+            int basePointY = 0;
 
-            //Welche Seiten des Autos müssen kontrolliert werden?
-            var sides = new System.Windows.Vector[2];
-
-            if (relativeMovement < 270)
+            while (true)
             {
-                //Das Auto rutscht NICHT nach links oder oben links
-                if (relativeMovement < 180)
+                int posX = rnd.Next(0,MapGrid.GridElementCollection.Length);
+                int posY = rnd.Next(0, MapGrid.GridElementCollection[0].Length);
+
+                if (_bIsPassable)
                 {
-                    //Das Auto rutscht NICHT nach unten oder unten links
-                    if (relativeMovement < 90)
+                    if (MapGrid.GridElementCollection[posX][posY].PassableSides != 0)
                     {
-                        //Das Auto rutscht NICHT nach rechts oder unten rechts
-                        //=> Das Auto bewegt sich auf jeden Fall nach oben
-                        corner = new System.Windows.Vector(carPosition.X + (carSize.Width / 2), carPosition.Y - (carSize.Height / 2));
-                        corner -= middle;
-                        corner = rotateVector(corner, rotationDegrees);
-                        corner += middle;
-
-                        //Obere Seite, Vektor zeigt nach links
-                        sides[0] = rotateVector(getFrontBackVector(carPosition, carSize, FrontBackDirections.Left), rotationDegrees);
-
-                        //Bewegt sich das Auto außerdem nach rechts?
-                        if (relativeMovement != 0)
-                        {
-                            //Das Auto rutscht nach oben rechts
-
-                            //Rechte Seite, Vektor zeigt nach unten
-                            sides[1] = rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Down), rotationDegrees);
-                        }
-                    }
-                    else
-                    {
-                        //Das Auto rutscht nach rechts und evtl nach unten
-                        //Ecke unten rechts
-                        corner = new System.Windows.Vector(carPosition.X + (carSize.Width / 2), carPosition.Y + (carSize.Height / 2));
-                        corner -= middle;
-                        corner = rotateVector(corner, rotationDegrees);
-                        corner += middle;
-
-                        //Rechte Seite, Vektor zeigt nach oben
-                        sides[0] = rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Up), rotationDegrees);
-                        if (relativeMovement > 90)
-                        {
-                            //Das Auto rutscht nach unten rechts
-
-                            //Untere Seite, Vektor zeigt nach links
-                            sides[1] = rotateVector(getFrontBackVector(carPosition, carSize, FrontBackDirections.Left), rotationDegrees);
-                        }
+                        basePointX = posX;
+                        basePointY = posY;
+                        break;
                     }
                 }
+
                 else
-                {
-                    //Das Auto bewegt sich nach unten und eventuell nach links
-                    //Ecke unten links
-                    corner = new System.Windows.Vector(carPosition.X - (carSize.Width / 2), carPosition.Y + (carSize.Height / 2));
-                    corner -= middle;
-                    corner = rotateVector(corner, rotationDegrees);
-                    corner += middle;
-
-                    //Untere Seite, Vektor zeigt nach rechts
-                    sides[0] = rotateVector(getFrontBackVector(carPosition, carSize, FrontBackDirections.Right), rotationDegrees);
-                    if (relativeMovement > 180)
-                    {
-                        //Das Auto rutscht nach unten links
-                        //linke Seite, Vektor zeigt nach oben
-                        sides[1] = rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Up), rotationDegrees);
-                    }
-                }
-            }
-            else
-            {
-                //Das Auto rutscht nach links und evtl nach oben
-                //Ecke oben links
-                corner = new System.Windows.Vector(carPosition.X - (carSize.Width / 2), carPosition.Y - (carSize.Height / 2));
-                corner -= middle;
-                corner = rotateVector(corner, rotationDegrees);
-                corner += middle;
-
-                //Linke Seite, Vektor zeigt nach unten
-                sides[0] = rotateVector(getLeftRightVector(carPosition, carSize, LeftRightDirections.Down), rotationDegrees);
-                if (relativeMovement > 270)
-                {
-                    //Das Auto rutscht nach oben links
-                    //Obere Seite, Vektor zeigt nach rechts
-                    sides[1] = rotateVector(getFrontBackVector(carPosition, carSize, FrontBackDirections.Right), rotationDegrees);
+                {                  
+                        basePointX = posX;
+                        basePointY = posY;
+                        break;
                 }
             }
 
-            var currentCarElement = this.MapGrid.GridElementCollection[carGridX][carGridY];
-            //MessageBox.Show("Y: " + y + ", X: " + x);
-            if (sides[0] != null)
-            {
-                var line = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), sides[0]);
-                List<Point> points = line.AllPoints;
-                for (var i = 0; i < points.Count; i++)
-                {
-                    var point = points[i];
 
-                    var px = (point.X / gridElementWidth);
-                    var py = (point.Y / gridElementHeight);
-                    var ctrl = new Label() { BackColor = Color.Green, Text = "", Location = point, Width = 5, Height = 5 };
-                    if (px != carGridX || py != carGridY)
-                    {
-                        if (MapGrid.GridElementCollection[px][py].PassableSides == 0)
-                            ctrl.BackColor = Color.Red;
-                    }
-                    this.Controls.Add(ctrl);
-                    ctrl.BringToFront();
-                }
 
-                if (sides[1] != null)
-                {
-                    line = Line.FromCarSide(new Point((int)corner.X, (int)corner.Y), sides[1]);
-                    points = line.AllPoints;
-                    for (var i = 0; i < points.Count; i++)
-                    {
-                        var point = points[i];
+            var elementWidth = (int)((MapGrid.Width / MapGrid.GridElementCollection.Length) * getScaleFactorWidth(size.Width));
+            var elementHeight = (int)((MapGrid.Height / MapGrid.GridElementCollection[0].Length) * getScaleFactorHeight(size.Height));
 
-                        var px =(point.X / gridElementWidth);
-                        var py = (point.Y / gridElementHeight);
-                        var ctrl = new Label() { BackColor = Color.Green, Text = "", Location = point, Width = 5, Height = 5 };
-                        if (px != carGridX || py != carGridY)
-                        {
-                            if (MapGrid.GridElementCollection[px][py].PassableSides == 0)
-                                ctrl.BackColor = Color.Red;
-                        }
-                        this.Controls.Add(ctrl);
-                        ctrl.BringToFront();
-                    }
-                }
-            }
+            int worldPosX = basePointX * elementWidth + Convert.ToInt32(elementWidth*0.5);
+            int worldPosY = basePointY * elementHeight + Convert.ToInt32(elementHeight*0.5);
 
-            var diff = DateTime.Now - st;
-            return null;
-        }*/
+            returnPoint = new Point(worldPosX, worldPosY);
+
+            return returnPoint;
+        } 
     }
 }
