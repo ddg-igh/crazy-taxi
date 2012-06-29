@@ -56,7 +56,7 @@ namespace CrazyTaxi
         {
             if (!_initialized)
             {
-                Fullscreen();
+                //Fullscreen();
                 _Dimension = GetResolution();
                 Size size = new Size((int)(_Dimension[0] * 1.2), (int)(_Dimension[1] * 1.2));
                 img = Properties.Resources._3;
@@ -155,8 +155,8 @@ namespace CrazyTaxi
             int width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
             int height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height; ;
             int[] Resolution = new int[2];
-            Resolution[0] = width;
-            Resolution[1] = height;
+            Resolution[0] = width/2;
+            Resolution[1] = height/2;
             int[] retVal = new int[] { width, height };
             return Resolution;
         }
