@@ -20,7 +20,7 @@ namespace CrazyTaxi.Car
 
         public static int MAX_SPEED = 7;
         public static int MIN_SPEED = -4;
-        public static double ACCELERATION = 0.1;
+        public static double ACCELERATION = 0.5;
         public static int ROTATION_SPEED = 7;
 
         public int Rotation { set; get; }
@@ -83,11 +83,11 @@ namespace CrazyTaxi.Car
             //Hält das auto an
             if (Speed > 0)
             {
-                Speed--;
+                Speed-=ACCELERATION/2;
             }
             else if (Speed < 0)
             {
-                Speed++;
+                Speed+=ACCELERATION/2;
             }
             x = Speed * Math.Cos((Rotation) * Math.PI / 180);
             y = Speed * Math.Sin((Rotation) * Math.PI / 180);

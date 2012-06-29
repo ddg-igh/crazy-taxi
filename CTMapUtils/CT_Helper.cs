@@ -12,9 +12,6 @@ namespace CTMapUtils
     {
         public static Image resizeImage(Image imgToResize, Size size)
         {
-            int sourceWidth = imgToResize.Width;
-            int sourceHeight = imgToResize.Height;
-
             Bitmap b = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppPArgb);
             Graphics g = Graphics.FromImage((Image)b);
 

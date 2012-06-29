@@ -22,7 +22,7 @@ namespace CrazyTaxi
     {
         public static int UPDATE_INTERVAL=30;
 
-        private int[] _Dimension;
+        private Size _Dimension;
         private DoubleBufferedPanel menuContainer;
         private DoubleBufferedPanel menuHolder;
         private HighscoreControlView highscoreView;
@@ -50,30 +50,30 @@ namespace CrazyTaxi
         public CT_UI()
         {
             InitializeComponent();
-            Initilize();
+            Initialize();
             Backgroundfader.Start();
         }
 
-        private void Initilize()
+        private void Initialize()
         {
             if (!_initialized)
             {
                 Fullscreen();
                 _Dimension = GetResolution();
-                Size size = new Size((int)(_Dimension[0] * 1.2), (int)(_Dimension[1] * 1.2));
+                Size size = new Size((int)(_Dimension.Width * 1.2), (int)(_Dimension.Height * 1.2));
                 img = Properties.Resources._3;
                 img = CT_Helper.resizeImage(img, size);
 
                 initGame();
 
                 #region Menu
-                int drawingPointWidth = _Dimension[0] / 2;
-                int drawingPointHeight = _Dimension[1] / 2;
+                int drawingPointWidth = _Dimension.Width / 2;
+                int drawingPointHeight = _Dimension.Height / 2;
                 Point menu = new Point(drawingPointWidth - 683 / 2, drawingPointHeight - 384 / 2);
                 menuContainer = new DoubleBufferedPanel(menu);
 
-                menuContainer.Width = _Dimension[0];
-                menuContainer.Height = _Dimension[1];
+                menuContainer.Width = _Dimension.Width;
+                menuContainer.Height = _Dimension.Height;
 
                 menuContainer.Location = new Point(0, 0);
                 menuContainer.Name = "Menu";
@@ -125,9 +125,9 @@ namespace CrazyTaxi
                 this.SetStyle(ControlStyles.UserPaint, true);
                 this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-                pong=new Pong(new Size(_Dimension[0],_Dimension[1]));
+                pong=new Pong(new Size(_Dimension.Width,_Dimension.Height));
 
-                gameBox.Size = new Size(_Dimension[0], _Dimension[1]);
+                gameBox.Size = new Size(_Dimension.Width, _Dimension.Height);
 
                 // Resize our backbuffer
                 backbuffer = new Bitmap(gameBox.Size.Width,gameBox.Size.Height, PixelFormat.Format32bppPArgb);
@@ -157,15 +157,11 @@ namespace CrazyTaxi
             this.WindowState = FormWindowState.Maximized;
         }
 
-        private int[] GetResolution()
+        private Size GetResolution()
         {
             int width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
             int height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height; ;
-            int[] Resolution = new int[2];
-            Resolution[0] = width;
-            Resolution[1] = height;
-            int[] retVal = new int[] { width, height };
-            return Resolution;
+            return new Size( width, height );
         }
 
         #region Events
@@ -255,6 +251,7 @@ namespace CrazyTaxi
 
         private void showMenu(bool state)
         {
+            this.Focus();
             game.changeGameState(state);
             menuContainer.Visible = state;
             menuHolder.Visible = state;
@@ -273,7 +270,7 @@ namespace CrazyTaxi
         private void Backgroundfader_Tick(object sender, EventArgs e)
         {
             imageChange();
-            int speed = (_Dimension[0]+_Dimension[1])/1000;
+            int speed = (_Dimension.Width+_Dimension.Height)/1000;
             switch (genway)
             {
                 case 0:
@@ -309,8 +306,8 @@ namespace CrazyTaxi
 
             if(genway==0)
             {
-                x = _Dimension[0] - img.Width;
-                y = _Dimension[1] - img.Height;
+                x = _Dimension.Width - img.Width;
+                y = _Dimension.Height - img.Height;
             }  
             else if (genway == 1)
             {
@@ -319,19 +316,19 @@ namespace CrazyTaxi
             }
             else if (genway == 2) 
             {
-                x = _Dimension[0] - img.Width;
+                x = _Dimension.Width - img.Width;
                 y = 0;
             }
             else if (genway == 3)
             {
                 x = 0;
-                y = _Dimension[1] - img.Height;
+                y = _Dimension.Height - img.Height;
             }
             
 
 
             Random rand = new Random();
-            Size size = new Size((int)(_Dimension[0] * 1.2), (int)(_Dimension[1] * 1.2));
+            Size size = new Size((int)(_Dimension.Width * 1.2), (int)(_Dimension.Height * 1.2));
             switch (rand.Next(0, 3))
             {
                 case 0:
@@ -348,8 +345,8 @@ namespace CrazyTaxi
 
         private void imageChange()
         {
-            int difWidth = _Dimension[0] - img.Width;
-            int difHeight = _Dimension[1] - img.Height;
+            int difWidth = _Dimension.Width - img.Width;
+            int difHeight = _Dimension.Height - img.Height;
             if (genway==0)
             {
                 if (x >= 0 || y >= 0)
@@ -411,19 +408,18 @@ namespace CrazyTaxi
                 }
                 backBufferGraphics.DrawString("fps:" + System.Math.Round(fps).ToString(), DefaultFont, Brushes.Yellow, 10, 10);
                 backBufferGraphics.DrawString("Score:" + game.Score.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 100, 10);
-                backBufferGraphics.DrawString("Level:" + game.MissionLevel.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 300, 10);
+                backBufferGraphics.DrawString("Level:" + game.MissionLevel.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 250, 10);
             }
             else if (Game.GameState.Failed.Equals(game.State))
             {
-                backBufferGraphics.DrawImage(img, 0, 0);
-                backBufferGraphics.DrawString("Game Over \n Score=" + game.Score, new Font(FontFamily.GenericSansSerif, 50), Brushes.Crimson, _Dimension[0] / 2 -200, _Dimension[1] / 2-50);          
+                backBufferGraphics.DrawString("Game Over \n Score=" + game.Score, new Font(FontFamily.GenericSansSerif, 50), Brushes.Crimson, _Dimension.Width / 2 -200, _Dimension.Height / 2-50);          
             }
             else
             {
                 long difference = (System.DateTime.Now - startTime).Milliseconds;
                 pong.Update(difference,keyList);
                 pong.Draw(backBufferGraphics);
-                backBufferGraphics.DrawString("Loading", DefaultFont, Brushes.Yellow, _Dimension[0] / 2, _Dimension[1] / 2);
+                backBufferGraphics.DrawString("Loading", DefaultFont, Brushes.Yellow, _Dimension.Width / 2, _Dimension.Height / 2);
             }
 
             g.DrawImageUnscaled(backbuffer, 0, 0);

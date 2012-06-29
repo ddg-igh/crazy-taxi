@@ -45,13 +45,13 @@ namespace CrazyTaxi
             MissionLevel = 0;
         }
 
-        public void Initialize(Form parent,int[] dim)
+        public void Initialize(Form parent,Size dim)
         {
             if (!initialized)
             {
                 Score = 0;
                 initialized = true;
-                size = new Size(dim[0], dim[1]);
+                size = new Size(dim.Width, dim.Height);
                 loadMap();
                 mission=nextMission();
             }
@@ -92,10 +92,12 @@ namespace CrazyTaxi
             miniMap = map.DrawImage(size);
             Console.WriteLine("MapParser.draw:" + (System.DateTime.Now - start).ToString());
 
-
-
-            entity = map.Collision.AddEntity(new Size(12, 23));
-            car = new CarImpl(new int[]{size.Width,size.Height},gameSize, entity);
+            int entityHeight = size.Height / 39;
+            int entityWidth = size.Width / 120;
+            Size entitySize = new Size(entityWidth, entityHeight);
+            Size carSize = new Size(entityHeight, entityWidth);
+            entity = map.Collision.AddEntity(entitySize);
+            car = new CarImpl(size, gameSize, entity, carSize);
             car.Location = map.GetRandomTilePosition(true, gameSize);
 
             loaded = true;
@@ -105,19 +107,22 @@ namespace CrazyTaxi
         {
             if (GameState.Running.Equals(State))
             {
+
+                if (mission.Finished)
+                {
+                    Score = Score + mission.GetFinishedScore();
+                    mission = nextMission();
+                }
+
+                if (mission.Failed || car.Destroyed)
+                {
+                    State = GameState.Failed;
+                }
+
                 Rectangle bounds = new Rectangle(0, 0, gameSize.Width, gameSize.Height);
                 car.Move(bounds);
                 mission.Update(ellapsedTIme);
 
-                if (mission.Finished)
-                {
-                    Score=Score+mission.GetFinishedScore();
-                    mission=nextMission();
-                }
-                else if (mission.Failed)
-                {
-                    State = GameState.Failed;
-                }
                 
             }
         }
@@ -144,6 +149,8 @@ namespace CrazyTaxi
                 //g.DrawImage(gameSize,new Rectangle(0,0,_Dimension[0], _Dimension[1]),new Rectangle(x,y,_Dimension[0], _Dimension[1]),GraphicsUnit.Pixel);
                 //g.DrawImageUnscaled(gameSize, x, y);
                 map.Draw(g, size, x, y);
+                //g.FillRectangle(Brushes.Black,new Rectangle(0, size.Height - 22, size.Width,2));
+                //g.FillRectangle(Brushes.White,new Rectangle(0,size.Height-20,size.Width,20));
                 car.draw(g);
                 mission.Draw(g,x,y);
             }
@@ -168,8 +175,13 @@ namespace CrazyTaxi
             return result;
         }
 
-        public bool changeGameState(bool pause)
+        public void changeGameState(bool pause)
         {
+
+            if (GameState.Failed.Equals(this.State))
+            {
+                return;
+            }
 
             if (pause)
             {
@@ -184,7 +196,6 @@ namespace CrazyTaxi
                 this.State = GameState.Loading;
             }
 
-            return true;
         }
 
         public void keyDown(Keys key)

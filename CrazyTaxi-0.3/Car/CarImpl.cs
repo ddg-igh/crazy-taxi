@@ -11,10 +11,25 @@ namespace CrazyTaxi.Car
 {
     class CarImpl
     {
-        private int[] dim;
+        private static int MAX_DMG = 100;
+        private static int COLLISION_MAX_DMG = 10;
+
+        private Size dim;
         private Size gameFieldSize;
+        private int dmg=0;
         private CollisionEntity entity;
         public CarController carCon { private set; get; }
+
+        private Image destroyedCar;
+        public Image Car { get; set; }
+
+        public Point Location { get; set; }
+
+        public Size Size { get; set; }
+
+        public float Angle { get; set; }
+
+        public bool Destroyed { get; private set; }
 
         public bool Right { get; set; }
 
@@ -24,16 +39,18 @@ namespace CrazyTaxi.Car
 
         public bool Down { get; set; }
 
-        public CarImpl(int[] dim,Size gameFieldSize, CollisionEntity entity) 
+        public CarImpl(Size dim,Size gameFieldSize, CollisionEntity entity,Size size) 
         {
             this.dim = dim;
             this.Angle = 0;
-            this.Size = new Size(23, 12);
+            this.Size = size;
             this.Car = CT_Helper.resizeImage(Properties.Resources.Taxi_GTA2, this.Size);
+            this.destroyedCar=CT_Helper.resizeImage(Properties.Resources.GTA2_CAR_71,this.Size);
             this.entity = entity;                
             this.carCon = new CarController();
-            this.Location = new Point(dim[0] / 2 - this.Car.Width / 2, dim[1] / 2 - this.Car.Height / 2);
-            this.gameFieldSize = gameFieldSize;   
+            this.Location = new Point(dim.Width / 2 - this.Car.Width / 2, dim.Height / 2 - this.Car.Height / 2);
+            this.gameFieldSize = gameFieldSize;
+            this.Destroyed = false;
         }
 
         private void Move(int key,Rectangle bounds) 
@@ -53,51 +70,115 @@ namespace CrazyTaxi.Car
 
         public  void Move(Rectangle bounds)
         {
+            if (Destroyed)
+            {
+                return;
+            }
+
+            Point cPosition = new Point(Location.X + Size.Width / 2, Location.Y + Size.Height / 2);
            
             if (Up && Down)
             {
+                if (entity.Update(cPosition, Convert.ToInt32(Angle + 90), true).Front || entity.Update(cPosition, Convert.ToInt32(Angle + 90), false).Back)
+                {
+                    collide();
+                }
+                FinishMove(bounds);
+
+                if (Left && Right)
+                {
+                }
+                else if (Left)
+                {
+                    Move((int)CarController.keys.left, bounds);
+                }
+                else if (Right)
+                {
+                    Move((int)CarController.keys.right, bounds);
+                }
             }
             else if (Up)
             {
-                Point cposition = new Point(Location.X + 23 / 2,Location.Y + 12 / 2);
-                if (entity.Update(cposition, Convert.ToInt32(Angle + 90), true).Front)
+
+                if (entity.Update(cPosition, Convert.ToInt32(Angle + 90), true).Front)
                 {
-                    carCon.Speed = 0;
+                    collide();
                 }
                 else
                 {
                     Move((int)CarController.keys.up, bounds);
                 }
+
+                if (Left && Right)
+                {
+                }
+                else if (Left)
+                {
+                    Move((int)CarController.keys.left, bounds);
+                }
+                else if (Right)
+                {
+                    Move((int)CarController.keys.right, bounds);
+                }
             }
             else if (Down)
             {
-                Point cposition = new Point(Location.X + 23 / 2, Location.Y + 12 / 2);
-                if (entity.Update(cposition, Convert.ToInt32(Angle + 90), false).Back)
+                if (entity.Update(cPosition, Convert.ToInt32(Angle + 90), false).Back)
                 {
-                    carCon.Speed = 0;
+                    collide();
                 }
                 else
                 {
                     Move((int)CarController.keys.down, bounds);
                 }
+
+                if (Left && Right)
+                {
+                }
+                else if (Left)
+                {
+                    Move((int)CarController.keys.right, bounds); //Wenn man rückwärts fährt ist die Drehung umgekehrt
+                }
+                else if (Right)
+                {
+                    Move((int)CarController.keys.left, bounds);
+                }
             }
             else
             {
+                if (entity.Update(cPosition, Convert.ToInt32(Angle + 90), true).Front || entity.Update(cPosition, Convert.ToInt32(Angle + 90), false).Back)
+                {
+                    collide();
+                }
                 FinishMove(bounds);
-                return;
+
+                if (Left && Right)
+                {
+                }
+                else if (Left)
+                {
+                    Move((int)CarController.keys.left, bounds);
+                }
+                else if (Right)
+                {
+                    Move((int)CarController.keys.right, bounds);
+                }
             }
 
-            if (Left && Right)
+        }
+
+        private void collide()
+        {
+            if (dmg >= MAX_DMG)
             {
+                Destroyed = true;
+                dmg = MAX_DMG;
             }
-            else if (Left)
+            else
             {
-                Move((int)CarController.keys.left, bounds);
+                dmg += (int)(COLLISION_MAX_DMG * (Math.Abs(carCon.Speed) / CarController.MAX_SPEED));
             }
-            else if (Right)
-            {
-                Move((int)CarController.keys.right, bounds);
-            }
+            carCon.Speed = 0;
         }
 
         public  bool FinishMove(Rectangle bounds)
@@ -126,25 +207,45 @@ namespace CrazyTaxi.Car
         public void draw(Graphics g)
         {
             
-            int xP = calculateLocation(dim[0],gameFieldSize.Width,this.Location.X);
-            int yP = calculateLocation(dim[1], gameFieldSize.Height, this.Location.Y);
+            int xP = calculateLocation(dim.Width,gameFieldSize.Width,this.Location.X);
+            int yP = calculateLocation(dim.Height, gameFieldSize.Height, this.Location.Y);
 
            System.Drawing.Drawing2D.Matrix m = g.Transform;
             //here we do not need to translate, we rotate at the specified point
-            float x = (float)(23 / 2) + (float)xP;
-            float y = (float)(12 / 2) + (float)yP;
+            float x = (float)(Size.Width / 2) + (float)xP;
+            float y = (float)(Size.Height / 2) + (float)yP;
             m.RotateAt(this.Angle, new PointF(x, y), System.Drawing.Drawing2D.MatrixOrder.Append);
             g.Transform = m;
-            g.DrawImageUnscaled(this.Car, new Point(xP, yP));
-            g.ResetTransform();          
+            if (Destroyed)
+            {
+                g.DrawImageUnscaled(this.destroyedCar, new Point(xP, yP));
+            }
+            else
+            {
+                g.DrawImageUnscaled(this.Car, new Point(xP, yP));
+            }
+            g.ResetTransform();
+
+
+            Brush brush = Brushes.Green;
+            if (dmg > 50 && dmg <=80)
+            {
+                brush = Brushes.Orange;
+            }
+            else if (dmg > 80)
+            {
+                brush = Brushes.Red;
+            }
+
+            g.DrawString("Schaden:" + dmg.ToString() + " %", new Font(FontFamily.GenericSansSerif, 10), brush, dim.Width/2, 10);
         }
 
         private double circleRadius = 2;
         public void drawMiniMap(Graphics g)
         {
             
-            int x = (int)Math.Ceiling((double)(dim[0] * Location.X / gameFieldSize.Width));
-            int y = (int)Math.Ceiling((double)(dim[1] * Location.Y / gameFieldSize.Height));
+            int x = (int)Math.Ceiling((double)(dim.Width * Location.X / gameFieldSize.Width));
+            int y = (int)Math.Ceiling((double)(dim.Height * Location.Y / gameFieldSize.Height));
 
             g.FillEllipse(Brushes.Green,x-(int)circleRadius ,y-(int)circleRadius,(int)(circleRadius * 2),(int)(circleRadius * 2));
 
@@ -170,13 +271,6 @@ namespace CrazyTaxi.Car
 
             return result;
         }
-        public Image Car { get; set; }
-
-        public Point Location { get; set; }
-
-        public Size Size { get; set; }
-
-        public float Angle { get; set; }
 
        /* protected override CreateParams CreateParams
         {
