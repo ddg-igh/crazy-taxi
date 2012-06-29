@@ -73,6 +73,7 @@
     <Compile Include="CollisionEntity.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="CollisionResult.cs" />
+    <Compile Include="CT_Helper.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="GridElement.cs" />
     <Compile Include="Map.cs">

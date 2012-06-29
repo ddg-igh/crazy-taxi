@@ -13,6 +13,7 @@ using System.Drawing.Drawing2D;
 using CrazyTaxi.Car;
 using System.IO;
 using CTMapUtils;
+using System.Drawing.Imaging;
 
 
 namespace CrazyTaxi
@@ -31,9 +32,10 @@ namespace CrazyTaxi
         private int genway=-1;
 
         private Game game;
-        private bool _initialized = false;
+        private Bitmap backbuffer;  // Backbuffers bitmap
+        private Graphics backBufferGraphics; // We draw on this
 
-        private int score = 1;
+        private bool _initialized = false;
         private Pong pong;
 
         //Wird Verwendet da Cursor.hide/show nicht immer bzw nicht funktioniert 
@@ -41,7 +43,7 @@ namespace CrazyTaxi
         [DllImport("user32.dll")]
         static extern int ShowCursor(bool bShow);
 
-  
+      
         
         public CT_UI()
         {
@@ -126,6 +128,12 @@ namespace CrazyTaxi
 
                 pong=new Pong(new Size(_Dimension[0],_Dimension[1]));
 
+                gameBox.Size = new Size(_Dimension[0], _Dimension[1]);
+
+                // Resize our backbuffer
+                backbuffer = new Bitmap(gameBox.Size.Width,gameBox.Size.Height, PixelFormat.Format32bppPArgb);
+                backBufferGraphics = Graphics.FromImage(backbuffer);
+
                 _initialized = true;
             }
         }
@@ -163,7 +171,7 @@ namespace CrazyTaxi
             switch (bt.ButtonText) 
             { 
                 case "Starten":
-                        showMenu(false);             
+                    showMenu(false);             
                     //Erzeuge neues GamePanel
                     break;
                 case "Laden":
@@ -279,8 +287,6 @@ namespace CrazyTaxi
                     x -= speed;
                     break;
             }
-
-            this.Invalidate(false);
         }
 
         private void ChangeImage()
@@ -377,38 +383,51 @@ namespace CrazyTaxi
         private void CT_UI_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+
+            g.CompositingMode=CompositingMode.SourceOver;
+            g.CompositingQuality=CompositingQuality.HighSpeed;
+            g.PixelOffsetMode=PixelOffsetMode.None;
+            g.SmoothingMode=SmoothingMode.None;
+            g.InterpolationMode=InterpolationMode.Default;
             
             if (Game.GameState.Pause.Equals(game.State))
             {
-                g.DrawImage(img, new Point(x, y));
+                backBufferGraphics.DrawImage(img, new Point(x, y));
             }
             else if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
             {
-                game.draw(g);
+                game.draw(backBufferGraphics);
                 long difference = (System.DateTime.Now - startTime).Milliseconds;
                 double fps = 0;
                 if (difference != 0)
                 {
                     fps = 1000 / difference;
                 }
-                g.DrawString("fps:" + System.Math.Round(fps).ToString(), DefaultFont, Brushes.Yellow, 10, 10);
-                g.DrawString("Score:" + game.Score.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 100, 10);
-
-                this.Invalidate();
+                backBufferGraphics.DrawString("fps:" + System.Math.Round(fps).ToString(), DefaultFont, Brushes.Yellow, 10, 10);
+                backBufferGraphics.DrawString("Score:" + game.Score.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 100, 10);
             }
             else
             {
                 long difference = (System.DateTime.Now - startTime).Milliseconds;
                 pong.Update(difference,keyList);
-                pong.Draw(g);
-                g.DrawString("Loading", DefaultFont, Brushes.Yellow, _Dimension[0] / 2, _Dimension[1] / 2);
-                this.Invalidate();
+                pong.Draw(backBufferGraphics);
+                backBufferGraphics.DrawString("Loading", DefaultFont, Brushes.Yellow, _Dimension[0] / 2, _Dimension[1] / 2);
             }
 
+            g.DrawImageUnscaled(backbuffer, 0, 0);
+
              startTime= System.DateTime.Now;
+             Application.DoEvents();
+             gameBox.Invalidate();
         }
 
+
         #endregion
+
+        private void Updater_Tick(object sender, EventArgs e)
+        {
+            game.updateGame(Updater.Interval);   
+        }
 
 
       

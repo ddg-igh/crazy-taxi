@@ -69,7 +69,6 @@
     <Compile Include="BitmapHelper.cs" />
     <Compile Include="Mission.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="CT_Helper.cs" />
     <Compile Include="CT_UI.cs">
       <SubType>Form</SubType>
     </Compile>

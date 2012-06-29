@@ -10,14 +10,13 @@ namespace CrazyTaxi
     static class BitmapHelper
     {
 
-        public static void Copy(Bitmap from, Bitmap to,Rectangle fromRect)
+        public static void Copy(Bitmap from, Bitmap to,Rectangle toRect,Rectangle fromRect)
             {
                 //if (from.Size != to.Size) throw new FormatException("Pictures are not Equal in Size");
                 if (from.PixelFormat != PixelFormat.Format32bppPArgb) throw new FormatException("Source Picture has wrong PixelFormat");
                 if (to.PixelFormat != PixelFormat.Format32bppPArgb) throw new FormatException("Target Picture has wrong PixelFormat");
 
-                Rectangle lockRect = new Rectangle(0, 0, to.Width, to.Height);
-                BitmapData toData = to.LockBits(lockRect, ImageLockMode.WriteOnly, PixelFormat.Format32bppPArgb);
+                BitmapData toData = to.LockBits(toRect, ImageLockMode.WriteOnly, PixelFormat.Format32bppPArgb);
                 BitmapData fromData = from.LockBits(fromRect, ImageLockMode.ReadOnly, PixelFormat.Format32bppPArgb);
 
                 byte[] data = new byte[8 * 1024];

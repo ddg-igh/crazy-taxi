@@ -70,6 +70,7 @@ namespace CTMapUtils
 
         public Image DrawImage(Size size)
         {
+            Dictionary<String,Bitmap> cache=new Dictionary<string,Bitmap>();
             Bitmap returnvalue = new Bitmap(size.Width, size.Height,PixelFormat.Format32bppPArgb);
             Graphics g = Graphics.FromImage(returnvalue);
 
@@ -78,16 +79,23 @@ namespace CTMapUtils
                 var row = MapGrid.GridElementCollection[x];
                 for (var y = 0; y < row.Length; y++)
                 {
+                    Bitmap image;
                     var gridElement = row[y];
 
-                    var elementWidth = (int)((MapGrid.Width / row.Length) * getScaleFactorWidth(size.Width));
-                    var elementHeight = (int)((MapGrid.Height / MapGrid.GridElementCollection.Length) * getScaleFactorHeight(size.Height));
+                    var elementWidth = (int)(Math.Ceiling((MapGrid.Width / row.Length) * getScaleFactorWidth(size.Width)));
+                    var elementHeight = (int)(Math.Ceiling((MapGrid.Height / MapGrid.GridElementCollection.Length) * getScaleFactorHeight(size.Height)));
 
-                    var image = (Bitmap)MapParser.GetImageById(gridElement.ImageId);
+                    
+                    if (!cache.TryGetValue(gridElement.ImageId,out image)){
+                        image= (Bitmap)MapParser.GetImageById(gridElement.ImageId);
+                        image=(Bitmap)CT_Helper.resizeImage(image,new Size(elementWidth,elementHeight));
+                        cache.Add(gridElement.ImageId, image);
+                    }
+
 
                     //image = (Bitmap)image.GetThumbnailImage(elementWidth, elementHeight, null, IntPtr.Zero);
 
-                    g.DrawImage(image, elementWidth * x, elementHeight * y, elementWidth, elementHeight);
+                    g.DrawImageUnscaled(image, elementWidth * x, elementHeight * y);
                  /*   for (var bx = 0; bx < elementWidth; bx++)
                     {
                         for (var by = 0; by < elementHeight; by++)
@@ -101,6 +109,54 @@ namespace CTMapUtils
 
             return returnvalue;
         }
+
+        public void Draw(Graphics g,Size screenSize,int x, int y)
+        {
+            int elementX = (int)Math.Floor(Math.Abs((double)(x / gridElementWidth)));
+            int elementY = (int)Math.Floor(Math.Abs((double)(y / gridElementHeight)));
+            int endElementX = elementX + (int)Math.Floor((double)(screenSize.Width / gridElementWidth));
+            int endElementY = elementY + (int)Math.Floor((double)(screenSize.Height / gridElementHeight));
+
+            int drawPositionX = x + elementX * gridElementWidth;
+            int drawPositionY = y + elementY * gridElementHeight;
+
+            if (endElementX >= MapGrid.GridElementCollection.Length-1)
+            {
+                endElementX = MapGrid.GridElementCollection.Length-1;
+            }
+
+            for (int amountX = 0; amountX + elementX <= endElementX; amountX++)
+            {
+                var row = MapGrid.GridElementCollection[amountX + elementX];
+               
+                if (endElementY >= row.Length-1)
+                {
+                    endElementY = row.Length-1;
+                }
+
+
+                for (var amountY =0; amountY+elementY <= endElementY; amountY++)
+                {
+                    var gridElement = row[amountY + elementY];           
+
+                    var image = (Bitmap)MapParser.GetImageById(gridElement.ImageId);
+
+                    //image = (Bitmap)image.GetThumbnailImage(elementWidth, elementHeight, null, IntPtr.Zero);
+
+                    g.DrawImageUnscaled(image, drawPositionX + amountX * gridElementWidth, drawPositionY + amountY * gridElementHeight);
+                    /*   for (var bx = 0; bx < elementWidth; bx++)
+                       {
+                           for (var by = 0; by < elementHeight; by++)
+                           {
+                               var cl = image.GetPixel(bx, by);
+                               returnvalue.SetPixel(bx + (elementWidth * x), by + (elementHeight * y), cl);
+                           }
+                       }  */
+                }
+            }
+        }
+
+      
 
         /// <summary>
         /// Erstellt die Boxen mit Bildern
@@ -124,6 +180,8 @@ namespace CTMapUtils
 
                     gridElementWidth = (int)((MapGrid.Width / MapGrid.GridElementCollection.Length) * ScaleFactorWidth);
                     gridElementHeight = (int)((MapGrid.Height / column.Length) * ScaleFactorHeight);
+
+                    MapParser.Initialize(gridElementWidth, gridElementHeight);
 
                     pictureBox.Width = (int)gridElementWidth;
                     pictureBox.Height = (int)gridElementHeight;

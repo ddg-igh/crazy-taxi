@@ -21,6 +21,12 @@ namespace CTMapUtils
 
         private static Dictionary<String, Bitmap> imageCache = new Dictionary<string, Bitmap>();
         private static string imagePath = "C:\\Tiles\\";
+        private static Size bitmapSize;
+
+        public static void Initialize(int gridElementWidth,int gridElementHeight){
+            bitmapSize = new Size(gridElementWidth, gridElementHeight);
+        }
+
         public static string ImagePath
         {
             get
@@ -73,6 +79,7 @@ namespace CTMapUtils
 
         public static Image GetImageById(string imageId)
         {
+            
             Bitmap returnvalue = null;
 
             try
@@ -81,9 +88,9 @@ namespace CTMapUtils
                 if (!imageCache.TryGetValue(path, out returnvalue))
                 {
                     if (File.Exists(path + "jpg"))
-                        returnvalue = new Bitmap(Image.FromFile(path + "jpg", true));
+                        returnvalue = (Bitmap)CT_Helper.resizeImage(Image.FromFile(path + "jpg", true), bitmapSize);
                     else if (File.Exists(path + "jpeg"))
-                        returnvalue = new Bitmap(Image.FromFile(path + "jpeg", true));
+                        returnvalue = (Bitmap)CT_Helper.resizeImage(Image.FromFile(path + "jpeg", true), bitmapSize);
 
                     imageCache.Add(path, returnvalue);
                 }

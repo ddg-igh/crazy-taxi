@@ -25,8 +25,7 @@ namespace CrazyTaxi
 
         public GameState State { private set; get; }
         public long Score { private set; get; }
-
-        private Image gameField = new Bitmap(1, 1, PixelFormat.Format32bppPArgb);
+        
         private Image miniMap;
         private Map map;
         private Size size;
@@ -49,8 +48,8 @@ namespace CrazyTaxi
                 Score = 0;
                 initialized = true;
                 size = new Size(dim[0], dim[1]);
-                Thread thread = new Thread(this.loadMap);
-                thread.Start();
+                loadMap();
+                mission = new Mission(map.GetRandomTilePosition(true, gameSize), map.GetRandomTilePosition(true, gameSize), 5000000, car, gameSize.Height, gameSize.Width);
             }
         }
 
@@ -86,28 +85,25 @@ namespace CrazyTaxi
             Console.WriteLine("MapParser.init:" + (System.DateTime.Now - start).ToString());
             //Karte an Größe des GUIs anpassen
             start = DateTime.Now;
-            gameField = map.DrawImage(gameSize);
-            miniMap=CT_Helper.resizeImage(gameField,size);
+            miniMap = map.DrawImage(size);
             Console.WriteLine("MapParser.draw:" + (System.DateTime.Now - start).ToString());
 
 
 
             entity = map.Collision.AddEntity(new Size(12, 23));
-            car = new CarImpl(new int[]{size.Width,size.Height},gameField.Size, entity);
+            car = new CarImpl(new int[]{size.Width,size.Height},gameSize, entity);
             car.Location = map.GetRandomTilePosition(true, gameSize);
 
             loaded = true;
-            this.State=GameState.Running;
-            mission = new Mission(map.GetRandomTilePosition(true, gameSize),map.GetRandomTilePosition(true, gameSize),5000000,car,gameField.Height,gameField.Width);
         }
 
-        private void updateGame()
+        public void updateGame(int ellapsedTIme)
         {
             if (GameState.Running.Equals(State))
             {
-                Rectangle bounds = new Rectangle(0, 0, gameField.Width, gameField.Height);
+                Rectangle bounds = new Rectangle(0, 0, gameSize.Width, gameSize.Height);
                 car.Move(bounds);
-                mission.update(15);
+                mission.update(ellapsedTIme);
 
                 if (mission.Finished)
                 {
@@ -121,7 +117,7 @@ namespace CrazyTaxi
 
         public void draw(Graphics g)
         {
-            updateGame();
+            //updateGame(ellapsedTime);
 
             if (GameState.Loading.Equals(State))
             {
@@ -134,18 +130,21 @@ namespace CrazyTaxi
                 mission.drawMiniMap(g,size.Width,size.Height);
             }
             else {
-                int x = calculateFramePosition(gameField.Width,size.Width,car.Location.X);
-                int y = calculateFramePosition(gameField.Height,size.Height,car.Location.Y);
-
-                //g.DrawImage(gameField,new Rectangle(0,0,_Dimension[0], _Dimension[1]),new Rectangle(x,y,_Dimension[0], _Dimension[1]),GraphicsUnit.Pixel);
-                g.DrawImageUnscaled(gameField, x, y);
+                int x = calculateFramePosition(gameSize.Width,size.Width,car.Location.X);
+                int y = calculateFramePosition(gameSize.Height,size.Height,car.Location.Y);
+                
+                //g.DrawImage(gameSize,new Rectangle(0,0,_Dimension[0], _Dimension[1]),new Rectangle(x,y,_Dimension[0], _Dimension[1]),GraphicsUnit.Pixel);
+                //g.DrawImageUnscaled(gameSize, x, y);
+                map.Draw(g, size, x, y);
                 car.draw(g);
                 mission.draw(g,x,y);
             }
         }
 
 
-        private int calculateFramePosition(int gameFieldEdge,int screenEdge, int carPosition)
+
+
+        private int calculateFramePosition(int gameSizeEdge,int screenEdge, int carPosition)
         {
             int result = screenEdge / 2 - carPosition;
 
@@ -153,9 +152,9 @@ namespace CrazyTaxi
             {
                 result = 0;
             }
-            else if (result < screenEdge - gameFieldEdge)
+            else if (result < screenEdge - gameSizeEdge)
             {
-                result = screenEdge - gameFieldEdge;
+                result = screenEdge - gameSizeEdge;
             }
 
             return result;
@@ -244,7 +243,7 @@ namespace CrazyTaxi
 
         private Mission nextMission()
         {
-             return new Mission(map.GetRandomTilePosition(true, gameSize), map.GetRandomTilePosition(true, gameSize), 5000000, car, gameField.Height, gameField.Width);
+             return new Mission(map.GetRandomTilePosition(true, gameSize), map.GetRandomTilePosition(true, gameSize), 5000000, car, gameSize.Height, gameSize.Width);
         }
 
     }
