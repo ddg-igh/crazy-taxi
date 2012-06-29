@@ -9,12 +9,20 @@ using CTMapUtils;
 
 namespace CrazyTaxi.Car
 {
-    class CarImpl : AbstractCar
+    class CarImpl
     {
         private int[] dim;
         private Size gameFieldSize;
         private CollisionEntity entity;
         public CarController carCon { private set; get; }
+
+        public bool Right { get; set; }
+
+        public bool Left { get; set; }
+
+        public bool Up { get; set; }
+
+        public bool Down { get; set; }
 
         public CarImpl(int[] dim,Size gameFieldSize, CollisionEntity entity) 
         {
@@ -43,7 +51,7 @@ namespace CrazyTaxi.Car
             }
         }
 
-        public override void Move(Rectangle bounds)
+        public  void Move(Rectangle bounds)
         {
            
             if (Up && Down)
@@ -92,7 +100,7 @@ namespace CrazyTaxi.Car
             }
         }
 
-        public override bool FinishMove(Rectangle bounds)
+        public  bool FinishMove(Rectangle bounds)
         { 
             double[] val = carCon.FinishMoving();
             int xvalue = (int)val[0];

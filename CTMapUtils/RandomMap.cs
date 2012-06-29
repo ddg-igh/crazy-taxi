@@ -100,6 +100,7 @@ namespace CTMapUtils
 
             //For Schleife neu strukturieren
             grid.GridElementCollection = new GridElement[width][];
+            int nodeCounter = 0;
             for (var i = 0; i < grid.GridElementCollection.Length; i++)
             {
                 grid.GridElementCollection[i] = new GridElement[width];

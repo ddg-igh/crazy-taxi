@@ -25,34 +25,36 @@ namespace CrazyTaxi
         private CarImpl playerCar;
         private int gameFieldHeight;
         private int gameFieldWidth;
+        private int level;
 
         public bool Finished { private set; get; }
+        public bool Failed { private set; get; }
 
-        public Mission(int startX, int startY, int endX, int endY, long time, CarImpl car,int gameFieldHeight,int gameFieldWidth)
-        {
-            start = new Point(startX, startY);
-            end = new Point(endX, endY);
-            this.time = time;
-            this.playerCar = car;
-            this.gameFieldHeight = gameFieldHeight;
-            this.gameFieldWidth = gameFieldWidth;
-            Finished = false;
-        }
-
-        public Mission(Point start,Point end, long time, CarImpl car, int gameFieldHeight, int gameFieldWidth)
+        public Mission(Point start,Point end, CarImpl car, int gameFieldHeight, int gameFieldWidth, int level)
         {
             this.start = start;
             this.end = end;
-            this.time = time;
             this.playerCar = car;
             this.gameFieldHeight = gameFieldHeight;
             this.gameFieldWidth = gameFieldWidth;
             Finished = false;
+            Failed = false;
+            this.level = level;
+
+            this.time=calculateTime();
         }
 
 
+        private long calculateTime()
+        {
+            int distance = Math.Abs(end.X - start.X) + Math.Abs(end.Y - start.Y);
+            double steps=distance/CarController.MAX_SPEED;
+
+            return (long)Math.Round((steps * CT_UI.UPDATE_INTERVAL) * (2 - level / 20)); ;
+        }
+
         private int radius = 5;
-        public void draw(Graphics g,int absX,int absY)
+        public void Draw(Graphics g,int absX,int absY)
   		{
   			if (MissionState.waiting.Equals(state)){
                 g.DrawEllipse(new Pen(Brushes.Red), start.X + absX-radius, start.Y + absY-radius, radius*2, radius*2);
@@ -74,7 +76,7 @@ namespace CrazyTaxi
   		}
 
         private double miniMapRadius = 2;
-        public void drawMiniMap(Graphics g,int screenWidth,int screenHeight)
+        public void DrawMiniMap(Graphics g,int screenWidth,int screenHeight)
         {
             if (MissionState.waiting.Equals(state))
             {
@@ -109,14 +111,14 @@ namespace CrazyTaxi
         }
 
 
-        public void update(long elapsedMillis)
+        public void Update(long elapsedMillis)
  		{
  			int reachedDistance=50;
  		
  			if (MissionState.running.Equals(state)){
  				time-=elapsedMillis;
  				
- 			   if (playerCar.carCon.Speed==0){
+ 			   if ((int)playerCar.carCon.Speed==0){
  					double distance=Math.Sqrt(Math.Pow(end.X-playerCar.Location.X,2)+Math.Pow(end.Y-playerCar.Location.Y,2));
  					if (distance<reachedDistance){
  						state=MissionState.finished;
@@ -126,10 +128,12 @@ namespace CrazyTaxi
  				
  				if (time<=0){
  					state=MissionState.failed;
+                    Failed = true;
  				}
  			}
  			else if (MissionState.waiting.Equals(state)){
- 				if (playerCar.carCon.Speed==0){
+                if ((int)playerCar.carCon.Speed == 0)
+                {
  					double distance=Math.Sqrt(Math.Pow(start.X-playerCar.Location.X,2)+Math.Pow(start.Y-playerCar.Location.Y,2));
  					if (distance<reachedDistance){
  						state=MissionState.running;

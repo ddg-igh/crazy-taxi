@@ -20,7 +20,8 @@ namespace CrazyTaxi
             Running = 0,
             Pause = 1,
             Loading = 2,
-            MiniMap = 3
+            Failed = 3,
+            MiniMap = 4
         }
 
         public GameState State { private set; get; }
@@ -36,9 +37,12 @@ namespace CrazyTaxi
         private Mission mission;
         private Size gameSize;
 
+        public int MissionLevel{get;private set;}
+
         public Game()
         {
             State = GameState.Pause;
+            MissionLevel = 0;
         }
 
         public void Initialize(Form parent,int[] dim)
@@ -49,7 +53,7 @@ namespace CrazyTaxi
                 initialized = true;
                 size = new Size(dim[0], dim[1]);
                 loadMap();
-                mission = new Mission(map.GetRandomTilePosition(true, gameSize), map.GetRandomTilePosition(true, gameSize), 5000000, car, gameSize.Height, gameSize.Width);
+                mission=nextMission();
             }
         }
 
@@ -103,12 +107,16 @@ namespace CrazyTaxi
             {
                 Rectangle bounds = new Rectangle(0, 0, gameSize.Width, gameSize.Height);
                 car.Move(bounds);
-                mission.update(ellapsedTIme);
+                mission.Update(ellapsedTIme);
 
                 if (mission.Finished)
                 {
                     Score=Score+mission.GetFinishedScore();
                     mission=nextMission();
+                }
+                else if (mission.Failed)
+                {
+                    State = GameState.Failed;
                 }
                 
             }
@@ -127,7 +135,7 @@ namespace CrazyTaxi
             {
                 g.DrawImageUnscaled(miniMap,0,0);
                 car.drawMiniMap(g);
-                mission.drawMiniMap(g,size.Width,size.Height);
+                mission.DrawMiniMap(g,size.Width,size.Height);
             }
             else {
                 int x = calculateFramePosition(gameSize.Width,size.Width,car.Location.X);
@@ -137,7 +145,7 @@ namespace CrazyTaxi
                 //g.DrawImageUnscaled(gameSize, x, y);
                 map.Draw(g, size, x, y);
                 car.draw(g);
-                mission.draw(g,x,y);
+                mission.Draw(g,x,y);
             }
         }
 
@@ -243,7 +251,7 @@ namespace CrazyTaxi
 
         private Mission nextMission()
         {
-             return new Mission(map.GetRandomTilePosition(true, gameSize), map.GetRandomTilePosition(true, gameSize), 5000000, car, gameSize.Height, gameSize.Width);
+            return new Mission(map.GetRandomTilePosition(true, gameSize), map.GetRandomTilePosition(true, gameSize), car, gameSize.Height, gameSize.Width, MissionLevel++);
         }
 
     }

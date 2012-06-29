@@ -59,7 +59,7 @@ namespace CTMapUtils
         }
 
         //Hält die Steuerelemente auf diesem UserControl
-        private PictureBox[][] elementBoxes = null;
+        //private PictureBox[][] elementBoxes = null;
 
         internal Map(Grid mapGrid)
         {
@@ -167,39 +167,17 @@ namespace CTMapUtils
             this.Size = uiSize;
 
             //x=breitengrad (x-achse)
-            elementBoxes = new PictureBox[MapGrid.GridElementCollection.Length][];
             for (var x = 0; x < MapGrid.GridElementCollection.Length; x++)
             {
-                elementBoxes[x] = new PictureBox[MapGrid.GridElementCollection[x].Length];
                 var column = MapGrid.GridElementCollection[x];
                 for (var y = 0; y < column.Length; y++)
                 {
                     var gridElement = column[y];
-                    var pictureBox = new System.Windows.Forms.PictureBox();
-                    //pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
 
                     gridElementWidth = (int)Math.Ceiling((MapGrid.Width / MapGrid.GridElementCollection.Length) * ScaleFactorWidth);
                     gridElementHeight = (int)Math.Ceiling((MapGrid.Height / column.Length) * ScaleFactorHeight);
 
                     MapParser.Initialize(gridElementWidth, gridElementHeight);
-
-                    pictureBox.Width = (int)gridElementWidth;
-                    pictureBox.Height = (int)gridElementHeight;
-                    var image = MapParser.GetImageById(gridElement.ImageId);
-                    pictureBox.Image = image;
-                    //pictureBox.BorderStyle = BorderStyle.FixedSingle;
-                    pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-
-                    var boxX = gridElementWidth * x;
-                    var boxY = gridElementHeight * y;
-
-                    pictureBox.Left = (int)boxX;
-                    pictureBox.Top = (int)boxY;
-
-                    elementBoxes[x][y] = pictureBox;
-
-                    //Auskommentiert, um die Testausgaben der Kollision zu sehen
-                    //this.Controls.Add(elementBoxes[x][y]);
                 }
             }
 
@@ -213,8 +191,7 @@ namespace CTMapUtils
         /// <param name="e"></param>
         private void Map_Resize(object sender, EventArgs e)
         {
-            if (elementBoxes != null)
-            {
+            
                 for (var x = 0; x < MapGrid.GridElementCollection.Length; x++)
                 {
                     var column = MapGrid.GridElementCollection[x];
@@ -223,21 +200,10 @@ namespace CTMapUtils
                         gridElementWidth = (int)((MapGrid.Width / MapGrid.GridElementCollection.Length) * ScaleFactorWidth);
                         gridElementHeight = (int)(((double)MapGrid.Height / (double)column.Length) * (double)ScaleFactorHeight);
 
-                        var pictureBox = elementBoxes[x][y];
-
-                        pictureBox.Width = (int)gridElementWidth;
-                        pictureBox.Height = (int)gridElementHeight;
-
-                        var boxX = gridElementWidth * x;
-                        var boxY = gridElementHeight * y;
-
-                        pictureBox.Left = (int)boxX;
-                        pictureBox.Top = (int)boxY;
-
-                        Collision.updateElementDimensions(gridElementWidth, gridElementHeight);
+                        
                     }
                 }
-            }
+                Collision=new CollisionManager(MapGrid, gridElementWidth, gridElementHeight); ;
         }
 
 

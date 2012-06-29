@@ -62,8 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Car\AbstractCarController.cs" />
-    <Compile Include="Car\AbstractCar.cs" />
     <Compile Include="Car\CarController.cs" />
     <Compile Include="Car\CarImpl.cs" />
     <Compile Include="BitmapHelper.cs" />

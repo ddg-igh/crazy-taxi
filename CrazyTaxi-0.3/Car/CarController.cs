@@ -7,33 +7,32 @@ using CTMapUtils;
 
 namespace CrazyTaxi.Car
 {
-    class CarController : AbstractCarController
+    class CarController
     {
+
+        public enum keys
+        {
+            down = 0,
+            up = 1,
+            left = 2,
+            right = 3
+        }
+
+        public static int MAX_SPEED = 7;
+        public static int MIN_SPEED = -4;
+        public static double ACCELERATION = 0.1;
+        public static int ROTATION_SPEED = 7;
+
+        public int Rotation { set; get; }
+        public double Speed { set; get; }
 
         public CarController()
         {
-            rotation = 0;
-            speed = 0;
-            maxSpeed =7;
-            minSpeed = -4;
+            Rotation = 0;
+            Speed = 0;
         }
 
-        public CarController(Rectangle rect)
-        {
-            bounds = rect;
-            rotation = 0;
-            speed = 0;
-            maxSpeed = 7;
-            minSpeed = -4;
-        }
-
-        public override int Speed
-        {
-            get { return speed; }
-            set { speed = value; }
-        }
-
-        public override double[] Move(int key)
+        public  double[] Move(int key)
         {
             double[] movedWay;
             double x = 0;
@@ -41,58 +40,58 @@ namespace CrazyTaxi.Car
             //Hält das auto vom drehen ab, wenn es nicht mehr fährt
             if (key == (int)keys.right) 
             {
-                if (speed != 0)
+                if (Speed != 0)
                 {
-                    rotation += 7;
+                    Rotation += ROTATION_SPEED;
                 }
             }
             else if (key == (int)keys.left) 
             {
                 
-                if (!speed.Equals(0))
+                if (!Speed.Equals(0))
                 {
-                    rotation -= 7;
+                    Rotation -= ROTATION_SPEED;
                 }
             }            
             else if (key==(int)keys.up)
             {
-                if (speed < maxSpeed)
+                if (Speed < MAX_SPEED)
                 {
-                    speed++;
+                    Speed+=ACCELERATION;
                 }
-                x = speed * Math.Cos((rotation) * Math.PI / 180);
-                y = speed * Math.Sin((rotation) * Math.PI / 180);
+                x = Speed * Math.Cos((Rotation) * Math.PI / 180);
+                y = Speed * Math.Sin((Rotation) * Math.PI / 180);
             }
             else if (key == (int)keys.down) 
             {
-                if (speed > minSpeed)
+                if (Speed > MIN_SPEED)
                 {
-                    speed--;
+                    Speed-=ACCELERATION;
                 }
-                x = speed * Math.Cos((rotation) * Math.PI / 180);
-                y = speed * Math.Sin((rotation) * Math.PI / 180);
+                x = Speed * Math.Cos((Rotation) * Math.PI / 180);
+                y = Speed * Math.Sin((Rotation) * Math.PI / 180);
             }
-            movedWay = new double[]{x,y,rotation};
+            movedWay = new double[]{x,y,Rotation};
             return movedWay;
         }
 
-        public override double[] FinishMoving() 
+        public double[] FinishMoving() 
         {
             double[] movedWay;
             double x = 0;
             double y = 0;
             //Hält das auto an
-            if (speed > 0)
+            if (Speed > 0)
             {
-                speed--;
+                Speed--;
             }
-            else if (speed < 0)
+            else if (Speed < 0)
             {
-                speed++;
+                Speed++;
             }
-            x = speed * Math.Cos((rotation) * Math.PI / 180);
-            y = speed * Math.Sin((rotation) * Math.PI / 180);
-            movedWay = new double[] { x, y, rotation };
+            x = Speed * Math.Cos((Rotation) * Math.PI / 180);
+            y = Speed * Math.Sin((Rotation) * Math.PI / 180);
+            movedWay = new double[] { x, y, Rotation };
             return movedWay;
         }
     }

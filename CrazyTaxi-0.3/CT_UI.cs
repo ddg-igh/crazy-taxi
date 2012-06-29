@@ -20,6 +20,8 @@ namespace CrazyTaxi
 {
     public partial class CT_UI : Form
     {
+        public static int UPDATE_INTERVAL=30;
+
         private int[] _Dimension;
         private DoubleBufferedPanel menuContainer;
         private DoubleBufferedPanel menuHolder;
@@ -62,16 +64,13 @@ namespace CrazyTaxi
                 img = Properties.Resources._3;
                 img = CT_Helper.resizeImage(img, size);
 
-                game = new Game();
-                game.Initialize(this, _Dimension);
+                initGame();
 
                 #region Menu
                 int drawingPointWidth = _Dimension[0] / 2;
                 int drawingPointHeight = _Dimension[1] / 2;
                 Point menu = new Point(drawingPointWidth - 683 / 2, drawingPointHeight - 384 / 2);
                 menuContainer = new DoubleBufferedPanel(menu);
-
-
 
                 menuContainer.Width = _Dimension[0];
                 menuContainer.Height = _Dimension[1];
@@ -81,7 +80,7 @@ namespace CrazyTaxi
 
                 menuHolder = new DoubleBufferedPanel();
 
-                string[] buttonTexts = { "Starten", "Laden", "Speichern", "Fortsetzen", "Beenden", "Highscore" };
+                string[] buttonTexts = { "Starten", "Laden", "Speichern", "Beenden", "Highscore" };
                 int positionMultiplicator = 1;
                 int offset = 10;
                 foreach (string text in buttonTexts)
@@ -110,8 +109,8 @@ namespace CrazyTaxi
                 this.Controls.Add(menuHolder);
                 menuHolder.BringToFront();
                 menuHolder.BorderStyle = BorderStyle.Fixed3D;
-                menuHolder.Width = 683;
-                menuHolder.Height = 384;
+                menuHolder.Width = 684;
+                menuHolder.Height = 345;
                 menuHolder.Location = menu;
                 menuHolder.BackColor = Color.Black;
                 menuContainer.BackColor = Color.FromArgb(150, Color.Black);
@@ -134,8 +133,16 @@ namespace CrazyTaxi
                 backbuffer = new Bitmap(gameBox.Size.Width,gameBox.Size.Height, PixelFormat.Format32bppPArgb);
                 backBufferGraphics = Graphics.FromImage(backbuffer);
 
+                Updater.Interval = UPDATE_INTERVAL;
+
                 _initialized = true;
             }
+        }
+
+        private void initGame()
+        {
+            game = new Game();
+            game.Initialize(this, _Dimension);
         }
 
         private void setCursor() 
@@ -171,8 +178,10 @@ namespace CrazyTaxi
             switch (bt.ButtonText) 
             { 
                 case "Starten":
+                    if (Game.GameState.Failed.Equals(game.State)){
+                        initGame();
+                    }
                     showMenu(false);             
-                    //Erzeuge neues GamePanel
                     break;
                 case "Laden":
                     showMenu(false);
@@ -180,9 +189,6 @@ namespace CrazyTaxi
                     break;
                 case "Speichern":
                     //Datenbank ...
-                    break;
-                case "Fortsetzen":
-                    showMenu(false);
                     break;
                 case "Beenden":
                     System.Environment.Exit(0);
@@ -405,6 +411,12 @@ namespace CrazyTaxi
                 }
                 backBufferGraphics.DrawString("fps:" + System.Math.Round(fps).ToString(), DefaultFont, Brushes.Yellow, 10, 10);
                 backBufferGraphics.DrawString("Score:" + game.Score.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 100, 10);
+                backBufferGraphics.DrawString("Level:" + game.MissionLevel.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 300, 10);
+            }
+            else if (Game.GameState.Failed.Equals(game.State))
+            {
+                backBufferGraphics.DrawImage(img, 0, 0);
+                backBufferGraphics.DrawString("Game Over \n Score=" + game.Score, new Font(FontFamily.GenericSansSerif, 50), Brushes.Crimson, _Dimension[0] / 2 -200, _Dimension[1] / 2-50);          
             }
             else
             {

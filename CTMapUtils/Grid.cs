@@ -7,6 +7,7 @@ namespace CTMapUtils
 {
     public class Grid
     {
+
         /// <summary>
         /// Alle Elemente in diesem Grid
         /// </summary>
@@ -25,5 +26,7 @@ namespace CTMapUtils
         public Grid()
         {
         }
+
+       
     }
 }
