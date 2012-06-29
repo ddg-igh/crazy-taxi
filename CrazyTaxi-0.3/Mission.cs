@@ -73,23 +73,24 @@ namespace CrazyTaxi
             }
   		}
 
-        private int miniMapRadius = 2;
+        private double miniMapRadius = 2;
         public void drawMiniMap(Graphics g,int screenWidth,int screenHeight)
         {
             if (MissionState.waiting.Equals(state))
             {
                 int x = screenWidth * start.X / gameFieldWidth;
                 int y = screenHeight * start.Y / gameFieldHeight;
-                g.FillEllipse(Brushes.Red, x - miniMapRadius, y - miniMapRadius, miniMapRadius * 2, miniMapRadius * 2);
+                g.FillEllipse(Brushes.Red, x - (int)miniMapRadius, y - (int)miniMapRadius, (int)(miniMapRadius * 2), (int)(miniMapRadius * 2));
             }
             else if (MissionState.running.Equals(state))
             {
                 int x = screenWidth * end.X / gameFieldWidth;
                 int y = screenHeight * end.Y / gameFieldHeight;
-                g.FillEllipse(Brushes.Red, x - miniMapRadius, y - miniMapRadius, miniMapRadius * 2, miniMapRadius * 2);
+                g.FillEllipse(Brushes.Red, x - (int)miniMapRadius, y - (int)miniMapRadius, (int)(miniMapRadius * 2), (int)(miniMapRadius * 2));
             }
 
-            if (++miniMapRadius > 15)
+            miniMapRadius += 0.5;
+            if (miniMapRadius > 15)
             {
                 miniMapRadius = 2;
             }

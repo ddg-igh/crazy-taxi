@@ -131,16 +131,17 @@ namespace CrazyTaxi.Car
             g.ResetTransform();          
         }
 
-        private int circleRadius = 2;
+        private double circleRadius = 2;
         public void drawMiniMap(Graphics g)
         {
             
-            int x = dim[0] * Location.X / gameFieldSize.Width;
-            int y = dim[1] * Location.Y / gameFieldSize.Height;
+            int x = (int)Math.Ceiling((double)(dim[0] * Location.X / gameFieldSize.Width));
+            int y = (int)Math.Ceiling((double)(dim[1] * Location.Y / gameFieldSize.Height));
 
-            g.FillEllipse(Brushes.Green,x - circleRadius,y - circleRadius,circleRadius * 2,circleRadius * 2);
-            
-            if (++circleRadius > 15)
+            g.FillEllipse(Brushes.Green,x-(int)circleRadius ,y-(int)circleRadius,(int)(circleRadius * 2),(int)(circleRadius * 2));
+
+            circleRadius += 0.5;
+            if (circleRadius > 15)
             {
                 circleRadius = 2;
             }

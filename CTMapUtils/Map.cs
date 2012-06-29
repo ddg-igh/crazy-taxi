@@ -178,8 +178,8 @@ namespace CTMapUtils
                     var pictureBox = new System.Windows.Forms.PictureBox();
                     //pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
 
-                    gridElementWidth = (int)((MapGrid.Width / MapGrid.GridElementCollection.Length) * ScaleFactorWidth);
-                    gridElementHeight = (int)((MapGrid.Height / column.Length) * ScaleFactorHeight);
+                    gridElementWidth = (int)Math.Ceiling((MapGrid.Width / MapGrid.GridElementCollection.Length) * ScaleFactorWidth);
+                    gridElementHeight = (int)Math.Ceiling((MapGrid.Height / column.Length) * ScaleFactorHeight);
 
                     MapParser.Initialize(gridElementWidth, gridElementHeight);
 
@@ -296,11 +296,8 @@ namespace CTMapUtils
 
 
 
-            var elementWidth = (int)((MapGrid.Width / MapGrid.GridElementCollection.Length) * getScaleFactorWidth(size.Width));
-            var elementHeight = (int)((MapGrid.Height / MapGrid.GridElementCollection[0].Length) * getScaleFactorHeight(size.Height));
-
-            int worldPosX = basePointX * elementWidth + Convert.ToInt32(elementWidth*0.5);
-            int worldPosY = basePointY * elementHeight + Convert.ToInt32(elementHeight*0.5);
+            int worldPosX = basePointX * gridElementWidth + Convert.ToInt32(gridElementWidth*0.5);
+            int worldPosY = basePointY * gridElementHeight + Convert.ToInt32(gridElementHeight*0.5);
 
             returnPoint = new Point(worldPosX, worldPosY);
 
