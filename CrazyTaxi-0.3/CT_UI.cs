@@ -39,6 +39,8 @@ namespace CrazyTaxi
 
         private bool _initialized = false;
         private Pong pong;
+        private bool playPong = false;
+        private bool showFPS = false;
 
         //Wird Verwendet da Cursor.hide/show nicht immer bzw nicht funktioniert 
         // using System.Runtime.InteropServices;
@@ -80,7 +82,7 @@ namespace CrazyTaxi
 
                 menuHolder = new DoubleBufferedPanel();
 
-                string[] buttonTexts = { "Starten", "Laden", "Speichern", "Beenden", "Highscore" };
+                string[] buttonTexts = { "Starten", "Laden", "Speichern", "Highscore","Pong spielen","Beenden" };
                 int positionMultiplicator = 1;
                 int offset = 10;
                 foreach (string text in buttonTexts)
@@ -89,7 +91,7 @@ namespace CrazyTaxi
                     VistaButton button = new VistaButton();
                     button.ButtonText = text;
 
-                    button.Width = 136;
+                    button.Width = 160;
                     button.Height = 38;
                     button.Location = new Point(offset + button.Width / 4, (button.Height + offset) * positionMultiplicator);
                     menuHolder.Controls.Add(button);
@@ -109,8 +111,8 @@ namespace CrazyTaxi
                 this.Controls.Add(menuHolder);
                 menuHolder.BringToFront();
                 menuHolder.BorderStyle = BorderStyle.Fixed3D;
-                menuHolder.Width = 684;
-                menuHolder.Height = 345;
+                menuHolder.Width = 683;
+                menuHolder.Height = 384;
                 menuHolder.Location = menu;
                 menuHolder.BackColor = Color.Black;
                 menuContainer.BackColor = Color.FromArgb(150, Color.Black);
@@ -160,7 +162,7 @@ namespace CrazyTaxi
         private Size GetResolution()
         {
             int width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-            int height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height; ;
+            int height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height; 
             return new Size( width, height );
         }
 
@@ -174,10 +176,14 @@ namespace CrazyTaxi
             switch (bt.ButtonText) 
             { 
                 case "Starten":
+                    showMenu(false);
+                    bt.ButtonText = "Fortsetzen";
+                    break;
+                case "Fortsetzen":
                     if (Game.GameState.Failed.Equals(game.State)){
                         initGame();
                     }
-                    showMenu(false);             
+                    showMenu(false);
                     break;
                 case "Laden":
                     showMenu(false);
@@ -203,6 +209,10 @@ namespace CrazyTaxi
                         menuHolder.Controls.Add(highscoreView);
                     }
                     break;
+                case "Pong spielen":
+                    playPong = true;
+                    showMenu(false);
+                    break;
                 default:
                     break;
             
@@ -215,37 +225,43 @@ namespace CrazyTaxi
         {
             if (e.KeyCode == Keys.Escape)
             {
+                playPong = false;
                 showMenu(true);
+            }
+            else if (e.KeyCode == Keys.F && e.Modifiers == Keys.Control)
+            {
+                showFPS = !showFPS;
             }
             else
             {
 
-                if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
-                {
-                    game.keyDown(e.KeyCode);
-                }
-                else
+                if (playPong)
                 {
                     if (!keyList.Contains(e.KeyCode))
                     {
                         keyList.Add(e.KeyCode);
                     }
                 }
+                else if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
+                {
+                    game.keyDown(e.KeyCode);
+                }
+
             }
         }
 
         private void CT_UI_KeyUp(object sender, KeyEventArgs e)
         {
-            if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
-            {
-                game.keyUp(e.KeyCode);
-            }
-            else
+            if (playPong)
             {
                 if (keyList.Contains(e.KeyCode))
                 {
                     keyList.Remove(e.KeyCode);
                 }
+            }
+            else if (Game.GameState.Running.Equals(game.State) || Game.GameState.MiniMap.Equals(game.State))
+            {
+                game.keyUp(e.KeyCode);
             }
         }
 
@@ -392,8 +408,14 @@ namespace CrazyTaxi
             g.PixelOffsetMode=PixelOffsetMode.None;
             g.SmoothingMode=SmoothingMode.None;
             g.InterpolationMode=InterpolationMode.Default;
-            
-            if (Game.GameState.Pause.Equals(game.State))
+
+            if (playPong)
+            {
+                long difference = (System.DateTime.Now - startTime).Milliseconds;
+                pong.Update(difference, keyList);
+                pong.Draw(backBufferGraphics);
+            }
+            else if (Game.GameState.Pause.Equals(game.State))
             {
                 backBufferGraphics.DrawImage(img, new Point(x, y));
             }
@@ -406,21 +428,17 @@ namespace CrazyTaxi
                 {
                     fps = 1000 / difference;
                 }
-                backBufferGraphics.DrawString("fps:" + System.Math.Round(fps).ToString(), DefaultFont, Brushes.Yellow, 10, 10);
+                if (showFPS)
+                {
+                    backBufferGraphics.DrawString("fps:" + System.Math.Round(fps).ToString(), DefaultFont, Brushes.Yellow, 10, 10);
+                }
                 backBufferGraphics.DrawString("Score:" + game.Score.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 100, 10);
                 backBufferGraphics.DrawString("Level:" + game.MissionLevel.ToString(), new Font(FontFamily.GenericSerif, 10), Brushes.Yellow, 250, 10);
             }
             else if (Game.GameState.Failed.Equals(game.State))
             {
                 backBufferGraphics.DrawString("Game Over \n Score=" + game.Score, new Font(FontFamily.GenericSansSerif, 50), Brushes.Crimson, _Dimension.Width / 2 -200, _Dimension.Height / 2-50);          
-            }
-            else
-            {
-                long difference = (System.DateTime.Now - startTime).Milliseconds;
-                pong.Update(difference,keyList);
-                pong.Draw(backBufferGraphics);
-                backBufferGraphics.DrawString("Loading", DefaultFont, Brushes.Yellow, _Dimension.Width / 2, _Dimension.Height / 2);
-            }
+            } 
 
             g.DrawImageUnscaled(backbuffer, 0, 0);
 
